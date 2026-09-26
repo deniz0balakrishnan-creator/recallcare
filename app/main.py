@@ -30,7 +30,8 @@ EVALS = ROOT / "evals"
 
 app = FastAPI(title="RecallCare", docs_url=None, redoc_url=None, openapi_url=None)
 _session_secret = settings.session_secret or secrets.token_urlsafe(32)
-app.add_middleware(SessionMiddleware, secret_key=_session_secret, same_site="lax", https_only=False,
+app.add_middleware(SessionMiddleware, secret_key=_session_secret, same_site="lax",
+                   https_only=settings.public_base_url.startswith("https://"),
                    max_age=12 * 3600, session_cookie="rc_session")
 app.mount("/static", StaticFiles(directory=WEB / "static"), name="static")
 templates = Jinja2Templates(directory=WEB / "templates")

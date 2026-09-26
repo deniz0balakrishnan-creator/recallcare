@@ -1,0 +1,23 @@
+# systemd unit for RecallCare on the single Lightsail instance (installed by deploy/setup_server.sh)
+[Unit]
+Description=RecallCare multi-agent patient follow-up (FastAPI + LangGraph)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/recallcare
+EnvironmentFile=/home/ubuntu/recallcare/.env
+ExecStart=/home/ubuntu/recallcare/.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --proxy-headers --forwarded-allow-ips 127.0.0.1
+Restart=always
+RestartSec=3
+# Hardening: the app only needs its own directory
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/home/ubuntu/recallcare/data /home/ubuntu/recallcare/evals
+
+[Install]
+WantedBy=multi-user.target
