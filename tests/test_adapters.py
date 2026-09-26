@@ -123,3 +123,53 @@ def test_whatsapp_reengagement_error_maps_to_window_closed(wa):
     wa.setattr(httpx, "post", lambda *a, **k: FakeResp(400, {"error": {"code": 131047, "message": "Re-engagement message"}}))
     with pytest.raises(WindowClosed):
         WhatsAppChannel().send_text("+6590000001", "hi", window_open=True)
+
+
+# ---------------------------------------------------------------- Bedrock Converse route (API Gateway → Lambda)
+def test_style_autodetect():
+    from app.llm.providers import resolve_gateway_style as r
+    assert r("https://abc123.execute-api.ap-southeast-1.amazonaws.com/UAT/chat", "auto") == "converse"
+    assert r("https://api.softwaresystems.app", "auto") == "ollama"
+    assert r("https://api.softwaresystems.app/v1", "auto") == "openai"
+    assert r("https://api.softwaresystems.app", "converse") == "converse"      # explicit setting wins
+
+
+def test_gateway_converse_request_and_response(gw):
+    gw.setattr(settings, "gateway_url", "https://abc123.execute-api.ap-southeast-1.amazonaws.com/UAT/llm")
+    gw.setattr(settings, "gateway_api_style", "auto")
+    seen = {}
+
+    def fake_post(url, content=None, timeout=None, headers=None, **kw):
+        seen.update(url=url, headers=headers, body=json.loads(content))
+        return FakeResp(200, {"stopReason": "end_turn",
+                              "output": {"message": {"role": "assistant", "content": [{"text": '{"action":"x","args":{}}'}]}},
+                              "usage": {"inputTokens": 321, "outputTokens": 12, "totalTokens": 333}})
+
+    gw.setattr(httpx, "post", fake_post)
+    res = GatewayLLM().complete("SYS", [{"role": "user", "content": "hi"}], max_tokens=64)
+    b = seen["body"]
+    assert seen["url"] == "https://abc123.execute-api.ap-southeast-1.amazonaws.com/UAT/llm"   # full URL, nothing appended
+    assert seen["headers"]["X-API-Key"] == "gw-test-key"
+    assert b["modelId"].startswith("global.anthropic.claude-sonnet-4-5")
+    assert b["system"] == [{"text": "SYS"}] and b["messages"] == [{"role": "user", "content": [{"text": "hi"}]}]
+    assert b["inferenceConfig"]["maxTokens"] == 64 and "tools" not in b and "toolConfig" not in b
+    assert (res.text, res.tokens_in, res.tokens_out, res.tokens_estimated) == ('{"action":"x","args":{}}', 321, 12, False)
+
+
+def test_native_tool_use_is_translated_into_our_validated_protocol(gw):
+    from app.llm.protocol import parse_action
+    from app.tools.schemas import GetClinicInfo
+    gw.setattr(settings, "gateway_url", "https://abc123.execute-api.ap-southeast-1.amazonaws.com/UAT/llm")
+    gw.setattr(httpx, "post", lambda url, content=None, **kw: FakeResp(200, {"output": {"message": {"content": [
+        {"toolUse": {"toolUseId": "t1", "name": "get_clinic_info", "input": {"topic": "hours"}}}]}}}))
+    res = GatewayLLM().complete("s", [{"role": "user", "content": "hi"}])
+    act, args = parse_action(res.text, {"get_clinic_info": GetClinicInfo})
+    assert act.action == "get_clinic_info" and args.topic == "hours"
+
+
+def test_lambda_proxy_envelope_is_unwrapped(gw):
+    gw.setattr(settings, "gateway_url", "https://abc123.execute-api.ap-southeast-1.amazonaws.com/UAT/llm")
+    inner = {"output": {"message": {"content": [{"text": "ok"}]}}, "usage": {"inputTokens": 5, "outputTokens": 1}}
+    gw.setattr(httpx, "post", lambda url, content=None, **kw: FakeResp(200, {"statusCode": 200, "body": json.dumps(inner)}))
+    res = GatewayLLM().complete("s", [{"role": "user", "content": "hi"}])
+    assert res.text == "ok" and res.tokens_in == 5

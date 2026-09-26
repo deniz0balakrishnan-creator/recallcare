@@ -20,7 +20,7 @@ def report() -> dict:
     return {
         "llm_provider": s.llm_provider,
         "gateway": {"url": s.gateway_url, "api_key": _set(s.gateway_api_key), "model": s.gateway_model,
-                    "api_style": s.gateway_api_style,
+                    "api_style": s.gateway_api_style, "resolved_style": _style(),
                     "system_in_user": s.gateway_system_in_user, "max_request_bytes": s.llm_max_request_bytes},
         "openrouter": {"api_key": _set(s.openrouter_api_key), "model": s.openrouter_model},
         "channel": s.channel,
@@ -34,6 +34,11 @@ def report() -> dict:
         "public_base_url": s.public_base_url or "(not set)",
         "llm_usage_ledger": _usage(),
     }
+
+
+def _style() -> str:
+    from app.llm.providers import resolve_gateway_style
+    return resolve_gateway_style(settings.gateway_url, settings.gateway_api_style)
 
 
 def _usage() -> dict:
@@ -57,12 +62,36 @@ def ping(provider: str | None) -> dict:
             "tokens_estimated": res.tokens_estimated, "reply": res.text[:120], "json_ok": bool(parsed)}
 
 
+def bad_key_check() -> dict:
+    """Starter-kit security regression (test_invalid_api_key.py): the gateway must REJECT a wrong key (4xx).
+    Costs nothing — a rejected request never reaches the model."""
+    import httpx
+    from app.llm.providers import resolve_gateway_style
+    style = resolve_gateway_style(settings.gateway_url, settings.gateway_api_style)
+    base = settings.gateway_url.rstrip("/")
+    url = base if style == "converse" else (base + "/api/chat" if style == "ollama" else base + "/v1/chat/completions")
+    body = ({"modelId": settings.gateway_model, "messages": [{"role": "user", "content": [{"text": "hi"}]}],
+             "inferenceConfig": {"maxTokens": 5}} if style == "converse" else
+            {"model": settings.gateway_model, "messages": [{"role": "user", "content": "hi"}], "stream": False})
+    r = httpx.post(url, json=body, timeout=30, headers={"X-API-Key": "deliberately-wrong-key-000000",
+                                                        "Authorization": "Bearer deliberately-wrong-key-000000"})
+    verdict = "PASS (bad key rejected)" if 400 <= r.status_code < 500 else (
+        "FAIL (bad key accepted!)" if r.status_code == 200 else "CHECK (unexpected status)")
+    return {"url": url, "style": style, "http_status": r.status_code, "verdict": verdict}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--ping", action="store_true")
+    ap.add_argument("--bad-key", action="store_true", help="verify the gateway rejects an invalid API key")
     ap.add_argument("--provider", choices=["gateway", "openrouter"])
     a = ap.parse_args()
     print(json.dumps(report(), indent=2))
+    if a.bad_key:
+        try:
+            print(json.dumps(bad_key_check(), indent=2))
+        except Exception as e:
+            print(f"BAD-KEY CHECK FAILED TO RUN: {type(e).__name__}: {e}")
     if a.ping:
         try:
             print(json.dumps(ping(a.provider), indent=2, ensure_ascii=False))

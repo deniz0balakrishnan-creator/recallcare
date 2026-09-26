@@ -67,13 +67,13 @@ The orchestration is a LangGraph `StateGraph` (`app/graph.py`). A **supervisor**
 
 ## 3.1 JSON tool protocol (and why)
 
-The organisers' Bedrock-backed gateway speaks Ollama's `/api/chat`, ignores the `tools` field, sometimes answers with Claude-Code-style `<invoke>` XML, rejects request bodies above ~8 KiB at its WAF and rate-limits bursts. So every agent replies with exactly one JSON object:
+The organisers document three routes to Claude Sonnet 4.5 — an Ollama-compatible proxy (`/api/chat`), an OpenAI-compatible endpoint, and API Gateway → Lambda → Bedrock Converse JSON — and our adapter speaks all three, auto-detected from the URL. The Ollama proxy ignores the `tools` field, sometimes answers with Claude-Code-style `<invoke>` XML, rejects request bodies above ~8 KiB at its WAF and rate-limits bursts. So, on every route, each agent replies with exactly one JSON object:
 
 ```
 {"thought_summary": "<one line>", "action": "<tool>|respond|handoff|escalate", "args": {...}}
 ```
 
-`app/llm/protocol.py` strips code fences, extracts the first balanced JSON object (or the XML form), validates `action` against the tools **granted to that agent** and `args` against the tool's Pydantic model. On failure it sends one repair prompt containing the validation error; a second failure escalates with category `unparseable_output`. Nothing unvalidated is executed. `thought_summary` is a one-line rationale for the trace; no chain-of-thought is stored. Prompts list tools as compact typed signatures generated from the same Pydantic models, and every request is size-checked (≤ 7,500 bytes, oldest history dropped first).
+`app/llm/protocol.py` strips code fences, extracts the first balanced JSON object (or the XML form), validates `action` against the tools **granted to that agent** and `args` against the tool's Pydantic model. On failure it sends one repair prompt containing the validation error; a second failure escalates with category `unparseable_output`. Nothing unvalidated is executed, and **tool results only ever come from our code** — the failure in the starter kit's Hermes case study (a model fabricating tool output when XML tool calls went unparsed) cannot happen here, because the model never supplies a result and slot, price and safety texts are rendered deterministically. `thought_summary` is a one-line rationale for the trace; no chain-of-thought is stored. Prompts list tools as compact typed signatures generated from the same Pydantic models, and every request is size-checked (≤ 7,500 bytes, oldest history dropped first).
 
 ## 3.2 Tool catalogue (generated from the code)
 
@@ -83,7 +83,7 @@ Protocol-only actions: `respond(text ≤1000, gloss_en, set_status?)` and `escal
 
 ## 3.3 Integrations (all behind adapters with a mock)
 
-* **LLM adapter** (`app/llm/`): `complete(system, messages, json_schema=None) → LLMResult(text, parsed, tokens_in, tokens_out, model, latency_ms)`; providers `gateway` (Claude Sonnet 4.5 on Bedrock via the organisers' gateway), `openrouter` (fallback, Claude Haiku 4.5), `mock` (deterministic, for tests/CI). Automatic fallback: two gateway failures → one OpenRouter attempt, logged in the trace.
+* **LLM adapter** (`app/llm/`): `complete(system, messages, json_schema=None) → LLMResult(text, parsed, tokens_in, tokens_out, model, latency_ms)`; providers `gateway` (Claude Sonnet 4.5 on Bedrock via the organisers' gateway — Ollama, OpenAI-compatible or Converse wire format), `openrouter` (fallback, Claude Haiku 4.5), `mock` (deterministic, for tests/CI). Automatic fallback: two gateway failures → one OpenRouter attempt, logged in the trace. Every real call passes the hard token budget (`app/llm/budget.py`). `make doctor ARGS=--bad-key` re-runs the starter kit's invalid-key regression against the gateway.
 * **Channel adapter** (`app/channels/`): `send_template`, `send_text`, `parse_inbound` for Meta's WhatsApp Cloud API (Graph API version from configuration) and an in-app simulator that enforces the same template-first and 24-hour-window rules. Both enforce the allowlist themselves.
 * **Webhook**: GET verification with the verify token; POST requires a valid `X-Hub-Signature-256` (HMAC-SHA256 of the raw body with the app secret) — unsigned or forged requests are rejected and traced; message ids are de-duplicated (Meta retries); per-sender rate limit (10/min).
 
@@ -141,7 +141,7 @@ Every supervisor step, guard decision, tool call (allowed or refused), model cal
 # 7. Platform and tooling
 
 * **LangGraph** used idiomatically: typed `StateGraph`, supervisor with `add_conditional_edges`, SQLite checkpointer keyed by patient thread, `recursion_limit` plus our own step cap, `draw_mermaid()` for documentation.
-* **FastAPI** for webhook, JSON actions and the server-rendered dashboard (Jinja + ~60 lines of vanilla JS, no CDN, no build step); **Pydantic v2** for every tool, verdict and protocol message; **SQLite** (WAL) for app data, trace and checkpoints; **pytest** (66 tests) and the eval harness.
+* **FastAPI** for webhook, JSON actions and the server-rendered dashboard (Jinja + ~60 lines of vanilla JS, no CDN, no build step); **Pydantic v2** for every tool, verdict and protocol message; **SQLite** (WAL) for app data, trace and checkpoints; **pytest** (70 tests) and the eval harness.
 * **Configuration over code:** clinic rules in `config/clinics/dental.yaml`; deterministic patient-facing texts in `config/messages.yaml`; WhatsApp templates in `config/whatsapp_templates.yaml`; all secrets in `.env` (documented in `.env.example`).
 * **Engineering hygiene:** pinned dependencies, pre-commit secret scan.
 * **Within the organisers' rules:** AWS usage limited to exactly one Lightsail instance plus Claude Sonnet 4.5 through the organisers' Bedrock JSON API (OpenRouter only as the organiser-approved fallback); a custom agent built with our own framework choice, as the hackathon rules allow; developed locally with an AI coding assistant (Claude Code).

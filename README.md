@@ -53,7 +53,7 @@ make demo        # mock LLM + in-app phone simulator → http://127.0.0.1:8000  
 In the dashboard press **Run demo scenario**, approve the batch, open **Patient phone** and reply as Mdm Tan (quick-reply chips are provided). Then:
 
 ```bash
-make test        # 66 unit/integration tests (mock LLM, simulator channel)
+make test        # 70 unit/integration tests (mock LLM, simulator channel)
 make eval        # 36 eval scenarios in mock mode (free, deterministic)
 ```
 
