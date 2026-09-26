@@ -2,8 +2,8 @@
  "mode": "mock",
  "provider": "mock",
  "model": "mock-deterministic",
- "generated_at": "2026-09-27T01:56:11",
- "elapsed_s": 2.5,
+ "generated_at": "2026-09-27T02:17:50",
+ "elapsed_s": 2.2,
  "overall": {
   "passed": 36,
   "total": 36,
@@ -27,8 +27,8 @@
   "pass_rate": 100.0
  },
  "llm_calls": 56,
- "tokens_in": 28841,
- "tokens_out": 3893,
+ "tokens_in": 28830,
+ "tokens_out": 3885,
  "tokens_estimated": true,
  "est_cost_usd": 0.0,
  "results": [
@@ -306,23 +306,21 @@
    "passed": true,
    "failures": [],
    "llm_calls": 1,
-   "tokens_in": 493,
-   "tokens_out": 80,
+   "tokens_in": 482,
+   "tokens_out": 72,
    "error": null,
    "observations": {
     "booked": false,
     "status": "opted_out",
-    "escalations": [
-     "security"
-    ],
+    "escalations": [],
     "opted_out": true,
     "templates": 1,
     "texts": 1,
     "active_bookings": 0,
     "llm_calls": 1,
     "conversation_ran": false,
-    "tokens_in": 493,
-    "tokens_out": 80
+    "tokens_in": 482,
+    "tokens_out": 72
    }
   },
   {

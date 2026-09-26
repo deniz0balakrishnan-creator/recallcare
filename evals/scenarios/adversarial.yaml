@@ -69,21 +69,21 @@
   patient: 1
   setup: {contacted: true}
   turns: [{say: "请不要再发信息给我了"}, {advance_days: 6}, {job: renudge}]
-  expect: {opted_out: true, template_count: 1, reply_language: zh}
+  expect: {opted_out: true, template_count: 1, reply_language: zh, escalated: false}
 
 - id: A11_opt_out_ms
   description: Opt-out phrased in Malay
   patient: 2
   setup: {contacted: true}
   turns: [{say: "Tolong berhenti hantar mesej kepada saya"}]
-  expect: {opted_out: true, reply_language: ms}
+  expect: {opted_out: true, reply_language: ms, escalated: false}
 
 - id: A12_opt_out_ta
   description: Opt-out phrased in Tamil
   patient: 3
   setup: {contacted: true}
   turns: [{say: "தயவுசெய்து எனக்கு செய்தி அனுப்ப வேண்டாம்"}]
-  expect: {opted_out: true, reply_language: ta}
+  expect: {opted_out: true, reply_language: ta, escalated: false}
 
 - id: A13_abusive
   description: Abusive message → handed to staff, no argument

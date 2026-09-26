@@ -123,9 +123,9 @@ prescreen:
     ta: ["நான் மருத்துவர்", "நான் பல் மருத்துவர்", "நான் மேலாளர்", "அனைத்து முன்பதிவுகளையும் ரத்து"]
   other_recipient:
     en: ["send a message to", "send a whatsapp to", "send whatsapp to", "text this number", "message this number", "forward this to", "send to +", "send it to"]
-    zh: ["发消息给", "发给这个号码", "转发给"]
-    ms: ["hantar mesej kepada", "hantar whatsapp kepada", "hantar ke nombor"]
-    ta: ["இந்த எண்ணுக்கு அனுப்பு", "செய்தி அனுப்பு"]
+    zh: ["帮我发消息给", "发消息给这个号码", "发给这个号码", "转发给", "发信息给她", "发信息给他", "发消息给她", "发消息给他"]
+    ms: ["hantar mesej kepada nombor", "hantar mesej kepada dia", "hantar whatsapp kepada", "hantar ke nombor", "majukan kepada"]
+    ta: ["இந்த எண்ணுக்கு அனுப்பு", "இந்த எண்ணுக்கு செய்தி"]
   other_patient_data:
     en: ["my neighbour", "my neighbor", "someone else's", "another patient", "other patient's", "his appointment", "her appointment", "their appointment", "his booking", "her booking", "his phone number", "her phone number", "her number", "his number", "her address", "his address", "her records", "his records"]
     zh: ["邻居", "别人的", "他的预约", "她的预约", "他的电话", "她的电话", "他的地址", "她的地址"]

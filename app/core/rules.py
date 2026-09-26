@@ -80,6 +80,9 @@ def prescreen(text: str, max_chars: int = 1500) -> Prescreen:
     ps.has_phone_number = bool(_PHONE.search(raw))
     if ps.has_phone_number and re.search(r"send|forward|text|message|whatsapp|发|转发|hantar|அனுப்ப", lc):
         ps.hits.setdefault("other_recipient", []).append("<phone number>")
+    if "opt_out" in ps.hits and "other_recipient" in ps.hits and not ps.has_phone_number:
+        # "stop sending messages to me" names no third party: it's an opt-out, not a request to message someone else
+        del ps.hits["other_recipient"]
     ps.emoji_only = is_emoji_or_symbols(raw)
     if not ps.hits:
         ps.short_reply = classify_short_reply(raw)

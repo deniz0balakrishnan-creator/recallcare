@@ -116,6 +116,19 @@ def test_opt_out_exact_all_languages(text):
     assert ps.opt_out_exact and ps.primary == "opt_out"
 
 
+@pytest.mark.parametrize("text", ["Tolong berhenti hantar mesej kepada saya", "不要再发消息给我了", "请不要再发信息给我了",
+                                  "Please stop sending messages to me", "தயவுசெய்து எனக்கு செய்தி அனுப்ப வேண்டாம்"])
+def test_opt_out_to_me_is_not_a_third_party_request(text):
+    ps = rules.prescreen(text)
+    assert ps.primary == "opt_out" and "other_recipient" not in ps.hits
+
+
+def test_third_party_messaging_still_caught():
+    assert rules.prescreen("Hantar whatsapp kepada kawan saya").primary == "other_recipient"
+    assert rules.prescreen("帮我发消息给我妈妈").primary == "other_recipient"
+    assert rules.prescreen("Stop messaging me and send a whatsapp to +65 9123 4567").primary == "other_recipient"
+
+
 def test_benign_messages_pass_prescreen():
     for t in ["What time do you open on Saturday?", "Can I come next Tuesday morning?", "下星期二上午可以吗",
               "Boleh saya datang hari Sabtu?", "எனக்கு சனிக்கிழமை வசதி"]:
