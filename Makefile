@@ -2,7 +2,7 @@
 PY ?= .venv/bin/python
 PIP ?= .venv/bin/pip
 
-.PHONY: install test seed run demo eval eval-live secret-scan graph clean
+.PHONY: install test seed run demo eval eval-live secret-scan graph clean docs pdf doctor deploy evidence
 
 install:            ## create venv + install pinned deps
 	test -d .venv || python3.11 -m venv .venv
@@ -17,7 +17,8 @@ seed:               ## (re)generate synthetic data into data/recallcare.db
 run:                ## start the app on http://127.0.0.1:8000
 	$(PY) -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 
-demo: seed          ## zero-credential demo: mock LLM + phone simulator (login staff / demo)
+demo:               ## zero-credential demo: mock LLM + phone simulator (login staff / demo)
+	LLM_PROVIDER=mock CHANNEL=simulator $(PY) -m app.demo
 	LLM_PROVIDER=mock CHANNEL=simulator DASHBOARD_PASSWORD=$${DASHBOARD_PASSWORD:-demo} $(PY) -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 
 eval:               ## eval suite, mock LLM (free, deterministic)
@@ -34,3 +35,18 @@ secret-scan:        ## scan every tracked file for secrets
 
 clean:
 	rm -rf .pytest_cache data/*.db data/*.db-* evals/runs
+
+doctor:             ## config check (no secrets printed); add ARGS=--ping to test the LLM
+	$(PY) -m app.doctor $(ARGS)
+
+docs:               ## regenerate doc fragments from code + latest eval run
+	$(PY) scripts/gen_doc_artifacts.py
+
+pdf: docs           ## build docs/pdf/*.pdf (needs pandoc + `pip install typst pypdf`)
+	$(PY) scripts/build_pdfs.py
+
+deploy:             ## push to the Lightsail instance (DEPLOY_HOST in .env)
+	deploy/deploy.sh
+
+evidence:           ## capture deployment evidence from the live server
+	deploy/capture_evidence.sh

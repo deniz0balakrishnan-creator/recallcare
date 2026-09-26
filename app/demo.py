@@ -65,3 +65,7 @@ def reset_and_play(storyline: bool = True) -> dict[str, Any]:
         db.set_setting("channel", channel)
     out = service.run_daily_triage(source="demo")
     return {"status": "ready", "yesterday_batch": len(batch), "today_batch": len(out.get("batch") or [])}
+
+
+if __name__ == "__main__":
+    print(reset_and_play())
