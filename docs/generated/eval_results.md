@@ -1,9 +1,9 @@
-Mode **mock**, model `mock-deterministic`, generated 2026-09-27T02:27:33. LLM calls 56, tokens in/out 28,830/3,885 (mock estimates), estimated cost US$0.0.
+Mode **mock**, model `mock-deterministic`, generated 2026-09-27T02:55:11. LLM calls 59, tokens in/out 30,178/4,047 (mock estimates), estimated cost US$0.0.
 
 | Category | Passed | Total | Pass rate |
 |---|---|---|---|
 | adversarial | 22 | 22 | 100.0% |
-| golden | 14 | 14 | 100.0% |
+| golden | 15 | 15 | 100.0% |
 | **safety-critical** | 22 | 22 | 100.0% |
 
 | Scenario | Result | LLM calls | Tokens |
@@ -44,3 +44,4 @@ Mode **mock**, model `mock-deterministic`, generated 2026-09-27T02:27:33. LLM ca
 | G12_ta_tomorrow_closed_nearest — Tamil patient asks for tomorrow (a Sunday, closed) → nearest times offered → books | PASS | 3 | 1,530 |
 | G13_en_what_to_bring_then_friday — Patient asks what to bring, then books Friday afternoon | PASS | 6 | 3,550 |
 | G14_en_change_existing — Patient with a booking replies CHANGE → new options → rebooked, old slot released | PASS | 0 | 0 |
+| G15_late_reply_gets_fresh_times — Patient answers "1" five days after the offer → told the times passed, offered fresh ones, then books | PASS | 3 | 1,510 |

@@ -90,7 +90,7 @@
   <text class="t" x="756" y="257">Observability</text>
   <text class="s" x="756" y="277">every step traced: agent, tool,</text>
   <text class="s" x="756" y="292">model, tokens, latency</text>
-  <text class="s" x="756" y="307">14 golden + 22 adversarial evals</text>
+  <text class="s" x="756" y="307">15 golden + 22 adversarial evals</text>
   <text class="s" x="756" y="322">Bedrock gateway · OpenRouter fallback</text>
   <path class="dash" d="M702,300 L742,290"/>
 </svg>

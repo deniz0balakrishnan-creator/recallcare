@@ -68,6 +68,18 @@ def scheduling_node(state: dict[str, Any]) -> dict[str, Any]:
         if not pending or n < 1 or n > len(pending):
             return {**upd, "scheduling_result": {"type": "invalid_option"}}
         slot = pending[n - 1]
+        if clock.parse(slot["start_ts"]) < clock.now() + timedelta(hours=scheduling.BOOKING_MIN_NOTICE_HOURS):
+            # The patient answered days later: the offered times have passed. Offer fresh ones, never book the past.
+            today = clock.today()
+            horizon = clinic_config()["calendar"]["horizon_days"]
+            found = call_tool("scheduling", "find_slots", {"earliest": today.isoformat(),
+                                                           "latest": (today + timedelta(days=horizon)).isoformat(),
+                                                           "part_of_day": "any", "duration_min": duration}, ctx,
+                              thought_summary="offered times have passed; offering the next available times")
+            if not found["options"]:
+                return {**upd, "scheduling_result": {"type": "no_slots"}, "proposed_slots": []}
+            return {**upd, "scheduling_result": {"type": "options_expired", "options": found["options"]},
+                    "proposed_slots": found["options"]}
         try:
             b = call_tool("scheduling", "book_slot", {"slot_id": slot["slot_id"], "patient_id": pid,
                                                       "visit_type": visit_type}, ctx,

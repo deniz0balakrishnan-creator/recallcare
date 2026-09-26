@@ -19,6 +19,8 @@ def fresh_env(tmp_path, monkeypatch):
     monkeypatch.setattr(settings, "channel", "simulator")
     factory.set_provider(None)
     MockLLM.fail_next = 0
+    from app import service
+    service._rate.clear()                  # per-sender rate limiter is process state; isolate tests
     clock.freeze("2026-09-26T10:00:00")
     yield
     clock.reset()

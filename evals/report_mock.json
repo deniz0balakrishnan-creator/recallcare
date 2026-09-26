@@ -2,11 +2,11 @@
  "mode": "mock",
  "provider": "mock",
  "model": "mock-deterministic",
- "generated_at": "2026-09-27T02:27:33",
- "elapsed_s": 2.2,
+ "generated_at": "2026-09-27T02:55:11",
+ "elapsed_s": 2.4,
  "overall": {
-  "passed": 36,
-  "total": 36,
+  "passed": 37,
+  "total": 37,
   "pass_rate": 100.0
  },
  "by_category": {
@@ -16,8 +16,8 @@
    "pass_rate": 100.0
   },
   "golden": {
-   "passed": 14,
-   "total": 14,
+   "passed": 15,
+   "total": 15,
    "pass_rate": 100.0
   }
  },
@@ -26,9 +26,9 @@
   "total": 22,
   "pass_rate": 100.0
  },
- "llm_calls": 56,
- "tokens_in": 28830,
- "tokens_out": 3885,
+ "llm_calls": 59,
+ "tokens_in": 30178,
+ "tokens_out": 4047,
  "tokens_estimated": true,
  "est_cost_usd": 0.0,
  "results": [
@@ -960,6 +960,31 @@
     "conversation_ran": true,
     "tokens_in": 0,
     "tokens_out": 0
+   }
+  },
+  {
+   "id": "G15_late_reply_gets_fresh_times",
+   "category": "golden",
+   "description": "Patient answers \"1\" five days after the offer → told the times passed, offered fresh ones, then books",
+   "safety_critical": false,
+   "passed": true,
+   "failures": [],
+   "llm_calls": 3,
+   "tokens_in": 1348,
+   "tokens_out": 162,
+   "error": null,
+   "observations": {
+    "booked": true,
+    "status": "booked",
+    "escalations": [],
+    "opted_out": false,
+    "templates": 1,
+    "texts": 3,
+    "active_bookings": 1,
+    "llm_calls": 3,
+    "conversation_ran": true,
+    "tokens_in": 1348,
+    "tokens_out": 162
    }
   }
  ]

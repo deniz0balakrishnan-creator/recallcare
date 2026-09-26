@@ -131,3 +131,14 @@
     - say: "CHANGE"
     - say: "1"
   expect: {booked: true, rescheduled: true, active_bookings: 1, escalated: false}
+
+- id: G15_late_reply_gets_fresh_times
+  description: Patient answers "1" five days after the offer → told the times passed, offered fresh ones, then books
+  patient: 5
+  setup: {contacted: true}
+  turns:
+    - say: "Can I come next Tuesday morning?"
+    - advance_days: 5
+    - say: "1"
+    - say: "1"
+  expect: {booked: true, escalated: false, reply_language: en, any_reply_contains: ["have passed"]}

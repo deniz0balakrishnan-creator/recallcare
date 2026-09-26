@@ -65,8 +65,8 @@ def _render_scheduling(state: dict[str, Any]) -> dict[str, Any]:
     addr = clinic["address"].split(", Singapore")[0]
     upd: dict[str, Any] = {"scheduling_rendered": True, "visited": state.get("visited", []) + ["conversation"]}
     kw: dict[str, str] = {}
-    if kind in ("offer", "slot_taken"):
-        key = "slot_taken" if kind == "slot_taken" else ("slot_offer" if r.get("exact") else "slot_offer_nearest")
+    if kind in ("offer", "slot_taken", "options_expired"):
+        key = kind if kind in ("slot_taken", "options_expired") else ("slot_offer" if r.get("exact") else "slot_offer_nearest")
         kw = {"options": _options_text(r["options"], lang)}
         text = render(key, lang, **kw)
         gloss = render(key, "en", options=_options_text(r["options"], "en"))

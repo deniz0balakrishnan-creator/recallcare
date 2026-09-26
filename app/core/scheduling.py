@@ -9,6 +9,12 @@ from app import clock, db
 from app.settings import clinic_config
 
 
+# Offers start at least OFFER_LEAD_HOURS ahead; a chosen slot is still bookable until BOOKING_MIN_NOTICE_HOURS before
+# it starts. The gap is the time a patient has to reply before an offered option expires.
+OFFER_LEAD_HOURS = 3
+BOOKING_MIN_NOTICE_HOURS = 1
+
+
 class BookingError(Exception):
     """Raised for any booking rule violation. Message is safe to log (no patient text)."""
 
@@ -48,7 +54,7 @@ def find_slots(earliest: date, latest: date, part_of_day: str = "any", duration_
     """Up to `limit` options, spread across different days first, then earliest-first."""
     cal = clinic_config()["calendar"]
     limit = limit or cal["max_options_offered"]
-    not_before = not_before or (clock.now() + timedelta(hours=2))
+    not_before = not_before or (clock.now() + timedelta(hours=OFFER_LEAD_HOURS))
     rows = db.q("SELECT id, dentist_id, start_ts, status FROM slots WHERE start_ts >= ? AND start_ts < ? ORDER BY start_ts, dentist_id",
                 (clock.iso(clock.at(earliest, "00:00")), clock.iso(clock.at(latest + timedelta(days=1), "00:00"))))
     n = math.ceil(duration_min / cal["slot_minutes"])
@@ -122,8 +128,8 @@ def book(slot_id: str, patient_id: int, visit_type: str, run_id: str | None, cre
         if len(rows) != len(chain) or any(r["status"] != "free" for r in rows):
             raise BookingError("slot not available")
         first = min(rows, key=lambda r: r["start_ts"])
-        if clock.parse(first["start_ts"]) <= clock.now():
-            raise BookingError("slot is in the past")
+        if clock.parse(first["start_ts"]) < clock.now() + timedelta(hours=BOOKING_MIN_NOTICE_HOURS):
+            raise BookingError("slot is in the past or too soon")
         cur = c.execute(
             "INSERT INTO appointments(patient_id,dentist_id,start_ts,duration_min,visit_type,status,created_by,created_at,run_id)"
             " VALUES(?,?,?,?,?,'booked',?,?,?)",

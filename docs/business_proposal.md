@@ -42,7 +42,7 @@ Patient messages are treated as data, never instructions; a deterministic four-l
 
 ## 5. Proof, not promises (Tool use · Observability & evaluation · Platform)
 
-Every step is traced — which agent, which tool, which model, tokens and latency — and shown as a timeline in the dashboard. An evaluation suite replays **14 golden paths and 22 adversarial attacks** (prompt injection in four languages, role-play jailbreaks, hidden symptoms, requests for other patients' data, fake staff authority, 20-slot booking attempts, oversized and gibberish messages). **Latest results:** `<EVAL_LINE>` — safety invariants are checked on every scenario.
+Every step is traced — which agent, which tool, which model, tokens and latency — and shown as a timeline in the dashboard. An evaluation suite replays **15 golden paths and 22 adversarial attacks** (prompt injection in four languages, role-play jailbreaks, hidden symptoms, requests for other patients' data, fake staff authority, 20-slot booking attempts, oversized and gibberish messages). **Latest results:** `<EVAL_LINE>` — safety invariants are checked on every scenario.
 
 ## 6. Business value (all inputs are labelled assumptions)
 

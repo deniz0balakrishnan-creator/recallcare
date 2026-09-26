@@ -115,3 +115,9 @@ cancel_confirm:
   zh: "您在{when}的预约已取消。如需重新预约，欢迎随时给我们发信息。"
   ms: "Temujanji anda pada {when} telah dibatalkan. Hubungi kami bila-bila masa jika anda mahu menempah semula."
   ta: "{when} அன்று உங்கள் முன்பதிவு ரத்து செய்யப்பட்டது. மீண்டும் முன்பதிவு செய்ய எப்போது வேண்டுமானாலும் எங்களுக்குச் செய்தி அனுப்புங்கள்."
+
+options_expired:
+  en: "Sorry, those times have passed. Here are the next available times:\n{options}\nReply 1, 2 or 3 to book, or tell me another day or time."
+  zh: "抱歉，之前提供的时间已经过去了。以下是最近可预约的时间：\n{options}\n请回复 1、2 或 3 进行预约，或告诉我其他日期或时间。"
+  ms: "Maaf, masa-masa tersebut telah berlalu. Berikut ialah masa terdekat yang tersedia:\n{options}\nBalas 1, 2 atau 3 untuk menempah, atau beritahu saya hari atau masa lain."
+  ta: "மன்னிக்கவும், அந்த நேரங்கள் கடந்துவிட்டன. அடுத்து கிடைக்கும் நேரங்கள்:\n{options}\nமுன்பதிவு செய்ய 1, 2 அல்லது 3 என பதிலளிக்கவும், அல்லது வேறு நாள் அல்லது நேரத்தைச் சொல்லுங்கள்."

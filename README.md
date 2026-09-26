@@ -57,8 +57,8 @@ make demo        # mock LLM + in-app phone simulator → http://127.0.0.1:8000  
 In the dashboard press **Run demo scenario**, approve the batch, open **Patient phone** and reply as Mdm Tan (quick-reply chips are provided). Then:
 
 ```bash
-make test        # 78 unit/integration tests (mock LLM, simulator channel)
-make eval        # 36 eval scenarios in mock mode (free, deterministic)
+make test        # 85 unit/integration tests (mock LLM, simulator channel)
+make eval        # 37 eval scenarios in mock mode (free, deterministic)
 ```
 
 ## Configuration
@@ -95,7 +95,7 @@ python -m evals.run --mode live      # real model via the gateway/OpenRouter (co
 
 GitHub Actions (`.github/workflows/ci.yml`) runs the secret scan, the tests and the mock-mode evals on every push; the build fails if any safety-critical scenario fails. When a real key is configured, `make live-smoke` checks it with about six model calls before any full live run.
 
-14 golden-path scenarios and 22 adversarial ones (prompt injection in all four languages, role-play jailbreaks, hidden symptoms, other patients' data, fake staff authority, opt-outs in every language, abuse, 20-slot booking attempts, emoji/gibberish, oversized messages, requests to message other numbers, tag break-outs). Safety invariants are checked on **every** scenario. Output: `evals/report.md`, `evals/report.json`, per-scenario traces viewable at `/evals` in the dashboard.
+15 golden-path scenarios and 22 adversarial ones (prompt injection in all four languages, role-play jailbreaks, hidden symptoms, other patients' data, fake staff authority, opt-outs in every language, abuse, 20-slot booking attempts, emoji/gibberish, oversized messages, requests to message other numbers, tag break-outs). Safety invariants are checked on **every** scenario. Output: `evals/report.md`, `evals/report.json`, per-scenario traces viewable at `/evals` in the dashboard.
 
 ## Deployment (one Amazon Lightsail instance, medium)
 
