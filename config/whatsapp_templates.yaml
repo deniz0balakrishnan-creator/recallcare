@@ -1,0 +1,51 @@
+# WhatsApp message templates for RecallCare.
+# Business-initiated messages (outside the 24h customer-service window) MUST use an approved template.
+# Submit these in WhatsApp Manager exactly as written.
+#
+# Meta rules respected: category Utility, no promotional wording, variables are not at the very
+# start or end of the body, every variable has a sample value, footer <= 60 chars.
+# Translations should be checked by a native speaker before production use.
+
+templates:
+  recall_reminder:
+    category: UTILITY
+    # Variables: {{1}} patient first/preferred name, {{2}} clinic name, {{3}} visit type (already translated)
+    samples: ["Mei Ling", "Sunbird Family Dental", "routine check-up"]
+    languages:
+      en:
+        meta_language_code: en
+        body: "Hello {{1}}, this is {{2}}. Our records show you are due for your {{3}}. Please reply to this message to choose a time that suits you, or reply STOP to stop these reminders."
+        footer: "Automated reminder. Not for emergencies."
+        samples: ["Mei Ling", "Sunbird Family Dental", "routine check-up"]
+      zh:
+        meta_language_code: zh_CN
+        body: "您好，{{1}}！这里是{{2}}。我们的记录显示您该进行{{3}}了。请回复此消息选择方便的时间；如不想再收到提醒，请回复 STOP。"
+        footer: "自动提醒，紧急情况请勿使用。"
+        samples: ["美玲", "Sunbird Family Dental", "例行口腔检查"]
+      ms:
+        meta_language_code: ms
+        body: "Hai {{1}}, ini {{2}}. Rekod kami menunjukkan anda perlu membuat {{3}}. Sila balas mesej ini untuk memilih masa yang sesuai, atau balas STOP untuk berhenti menerima peringatan ini."
+        footer: "Peringatan automatik. Bukan untuk kecemasan."
+        samples: ["Siti", "Sunbird Family Dental", "pemeriksaan gigi rutin"]
+      ta:
+        meta_language_code: ta
+        body: "வணக்கம் {{1}}, இது {{2}}. எங்கள் பதிவுகளின்படி உங்கள் {{3}} செய்ய வேண்டிய நேரம் வந்துவிட்டது. உங்களுக்கு வசதியான நேரத்தைத் தேர்வுசெய்ய இந்தச் செய்திக்குப் பதிலளிக்கவும், அல்லது இந்த நினைவூட்டல்களை நிறுத்த STOP என்று பதிலளிக்கவும்."
+        footer: "தானியங்கி நினைவூட்டல். அவசரநிலைக்கு அல்ல."
+        samples: ["Priya", "Sunbird Family Dental", "வழக்கமான பல் பரிசோதனை"]
+
+  # Stand-in used on the real channel until recall_reminder is approved (Meta's pre-approved sample).
+  hello_world:
+    category: UTILITY
+    languages:
+      en:
+        meta_language_code: en_US
+        body: "Hello World! Welcome and congratulations!! This message demonstrates your ability to send a WhatsApp message notification from the Cloud API, hosted by Meta. Thank you for taking the time to test with us."
+
+# Visit-type labels passed as {{3}}, per language.
+visit_type_labels:
+  routine_checkup:     {en: "routine check-up", zh: "例行口腔检查", ms: "pemeriksaan gigi rutin", ta: "வழக்கமான பல் பரிசோதனை"}
+  scaling_polishing:   {en: "scaling and polishing", zh: "洗牙", ms: "pembersihan karang gigi", ta: "பல் சுத்தம் செய்தல்"}
+  perio_maintenance:   {en: "gum care review", zh: "牙周复诊", ms: "rawatan susulan gusi", ta: "ஈறு பராமரிப்பு மறுபரிசோதனை"}
+  treatment_followup:  {en: "treatment follow-up", zh: "治疗复诊", ms: "rawatan susulan", ta: "சிகிச்சை பின்தொடர்வு"}
+  child_checkup:       {en: "child dental check-up", zh: "儿童牙科检查", ms: "pemeriksaan gigi kanak-kanak", ta: "குழந்தை பல் பரிசோதனை"}
+  denture_review:      {en: "denture review", zh: "假牙复查", ms: "semakan gigi palsu", ta: "பல்செட் மறுபரிசோதனை"}
