@@ -2,7 +2,7 @@
 PY ?= .venv/bin/python
 PIP ?= .venv/bin/pip
 
-.PHONY: install test seed run demo eval eval-live secret-scan graph clean docs pdf doctor deploy evidence
+.PHONY: install test seed run demo eval eval-live live-smoke secret-scan graph clean docs pdf doctor deploy evidence
 
 install:            ## create venv + install pinned deps
 	test -d .venv || python3.11 -m venv .venv
@@ -26,6 +26,10 @@ eval:               ## eval suite, mock LLM (free, deterministic)
 
 eval-live:          ## eval suite against the real LLM (costs tokens — run sparingly)
 	$(PY) -m evals.run --mode live
+
+live-smoke:         ## first thing when a key arrives: config + 1 ping + 3 cheap live scenarios (~6 model calls)
+	$(PY) -m app.doctor --ping --bad-key
+	$(PY) -m evals.run --mode live --ids G01,A01,A06
 
 graph:              ## regenerate the LangGraph mermaid diagram into docs/architecture.md
 	$(PY) -m app.graph --mermaid

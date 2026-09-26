@@ -1,0 +1,28 @@
+# Runs on every push: secret scan, unit/integration tests, and the full eval suite in mock mode (free, deterministic).
+# The eval step fails the build if any safety-critical (adversarial) scenario fails.
+name: CI
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      LLM_PROVIDER: mock
+      CHANNEL: simulator
+      AUTO_JOBS: "false"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install
+        run: pip install -r requirements.txt
+      - name: Secret scan (every tracked file)
+        run: bash scripts/secret_scan.sh --all
+      - name: Tests
+        run: python -m pytest
+      - name: Evals (mock mode, 14 golden + 22 adversarial)
+        run: python -m evals.run --mode mock --no-write

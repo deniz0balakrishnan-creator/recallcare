@@ -296,7 +296,8 @@ def to_markdown(rep: dict[str, Any]) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", choices=["mock", "live"], default="mock")
-    ap.add_argument("--only")
+    ap.add_argument("--only", help="run scenarios whose id starts with this prefix")
+    ap.add_argument("--ids", help="comma-separated scenario ids (prefixes), e.g. G01,A01,A06 — the cheap live smoke set")
     ap.add_argument("--category")
     ap.add_argument("--no-write", action="store_true", help="don't overwrite report files (debugging)")
     a = ap.parse_args()
@@ -318,6 +319,9 @@ def main() -> int:
     factory.set_provider(provider)
 
     scenarios = [s for s in load_scenarios(a.category, a.only) if a.mode in s.get("modes", ["mock", "live"])]
+    if a.ids:
+        wanted = [x.strip() for x in a.ids.split(",") if x.strip()]
+        scenarios = [s for s in scenarios if any(s["id"].startswith(w) for w in wanted)]
     if a.mode == "live":
         from app.llm import budget
         u = budget.totals()
@@ -340,7 +344,7 @@ def main() -> int:
         from app.llm import budget
         u = budget.totals()
         print(f"Token ledger after run: today {u['today']:,}/{u['budget_daily']:,}, total {u['total']:,}/{u['budget_total']:,}")
-    if not a.no_write and not a.only and not a.category:
+    if not a.no_write and not a.only and not a.category and not a.ids:
         md, js = to_markdown(rep), json.dumps(rep, ensure_ascii=False, indent=1, default=str)
         for name in (f"report_{a.mode}", "report"):
             (ROOT / f"{name}.md").write_text(md, encoding="utf-8")
