@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" font-family="Helvetica, Arial, sans-serif">
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker></defs>
+  <rect width="600" height="280" fill="#fff"/>
+  <g font-size="14" fill="#0b0b0b">
+    <rect x="16" y="110" width="84" height="40" rx="20" fill="#fcfcfb" stroke="#c3c2b7"/><text x="37" y="135">START</text>
+    <rect x="150" y="100" width="150" height="60" rx="10" fill="#e8f1fc" stroke="#2a78d6" stroke-width="1.6"/>
+    <text x="180" y="127" font-weight="700">supervisor</text><text x="172" y="146" font-size="11.5" fill="#52514e">rule-based routing</text>
+    <rect x="420" y="10" width="160" height="44" rx="10" fill="#fcfcfb" stroke="#c3c2b7"/><circle cx="440" cy="32" r="6" fill="#eb6834"/><text x="454" y="37">triage</text>
+    <rect x="420" y="72" width="160" height="44" rx="10" fill="#fcfcfb" stroke="#c3c2b7"/><circle cx="440" cy="94" r="6" fill="#1baf7a"/><text x="454" y="99">guard</text>
+    <rect x="420" y="134" width="160" height="44" rx="10" fill="#fcfcfb" stroke="#c3c2b7"/><circle cx="440" cy="156" r="6" fill="#eda100"/><text x="454" y="161">conversation</text>
+    <rect x="420" y="196" width="160" height="44" rx="10" fill="#fcfcfb" stroke="#c3c2b7"/><circle cx="440" cy="218" r="6" fill="#e87ba4"/><text x="454" y="223">scheduling</text>
+    <rect x="183" y="214" width="84" height="40" rx="20" fill="#fcfcfb" stroke="#c3c2b7"/><text x="210" y="239">END</text>
+  </g>
+  <g fill="none" stroke="#52514e" stroke-width="1.4">
+    <path d="M100,130 L150,130" marker-end="url(#a)"/>
+    <path d="M300,112 C360,100 370,34 420,32" marker-start="url(#a)" marker-end="url(#a)"/>
+    <path d="M300,122 C360,118 380,95 420,94" marker-start="url(#a)" marker-end="url(#a)"/>
+    <path d="M300,140 C360,142 380,156 420,156" marker-start="url(#a)" marker-end="url(#a)"/>
+    <path d="M300,150 C360,162 370,216 420,218" marker-start="url(#a)" marker-end="url(#a)"/>
+    <path d="M225,160 L225,214" stroke-dasharray="5 3" marker-end="url(#a)"/>
+  </g>
+  <text x="16" y="272" font-size="11.5" fill="#52514e">↔ the supervisor picks one specialist per step (conditional edge); each specialist hands back to the supervisor.</text>
+</svg>

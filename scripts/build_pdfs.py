@@ -39,12 +39,22 @@ PREAMBLE = r"""
 #show raw: set text(font: ("Menlo", "Courier New"), size: 0.88em)
 #show raw.where(block: true): it => block(fill: rgb("#f3f2ee"), inset: 6pt, radius: 4pt, width: 100%, it)
 #set table(stroke: 0.5pt + rgb("#c3c2b7"), inset: 4pt)
+#show figure: set block(breakable: true)
+#show figure.where(kind: table): set block(breakable: true)
 #show table: set text(size: 0.9em)
 #show quote: it => block(fill: rgb("#e8f1fc"), inset: 7pt, radius: 4pt, width: 100%, it.body)
 #set list(spacing: 0.45em)
 #align(left)[#text(size: 1.75em, weight: "bold")[{title}] \ #text(size: 1.0em, fill: rgb("#52514e"))[{subtitle}]]
 #v(0.3em)
 """
+
+
+def expand_includes(md: str) -> str:
+    """`{{include generated/x.md}}` on its own line → that file's contents (paths relative to docs/)."""
+    def repl(m: re.Match) -> str:
+        f = DOCS / m.group(1).strip()
+        return f.read_text(encoding="utf-8") if f.exists() else f"_(missing {m.group(1)})_"
+    return re.sub(r"^\{\{include (.+?)\}\}\s*$", repl, md, flags=re.M)
 
 
 def fill_placeholders(md: str) -> str:
@@ -66,7 +76,7 @@ def split_front_matter(md: str) -> tuple[dict, str]:
 def build(key: str) -> Path:
     import typst
     src, out_name, style = DOCS_TO_BUILD[key]
-    md = fill_placeholders((DOCS / src).read_text(encoding="utf-8"))
+    md = fill_placeholders(expand_includes((DOCS / src).read_text(encoding="utf-8")))
     meta, body = split_front_matter(md)
     body_typ = subprocess.run([PANDOC, "-f", "markdown+pipe_tables+link_attributes", "-t", "typst", "--wrap=none"],
                               input=body, capture_output=True, text=True, check=True).stdout
