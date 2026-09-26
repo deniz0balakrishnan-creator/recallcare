@@ -36,3 +36,4 @@ data/*.sqlite*
 
 # Generated eval traces (report.md/json are committed on purpose)
 evals/runs/
+docs/.*.typ

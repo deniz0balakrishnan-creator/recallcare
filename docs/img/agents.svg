@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 990 360" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#52514e"/>
+    </marker>
+    <style>
+      .box{fill:#fcfcfb;stroke:#c3c2b7;stroke-width:1.2}
+      .t{font-size:15px;font-weight:700;fill:#0b0b0b}
+      .s{font-size:11.5px;fill:#52514e}
+      .l{stroke:#52514e;stroke-width:1.4;fill:none;marker-end:url(#ar)}
+      .dash{stroke:#898781;stroke-width:1.2;fill:none;stroke-dasharray:4 3;marker-end:url(#ar)}
+      .tag{font-size:10.5px;font-weight:700;fill:#fff}
+    </style>
+  </defs>
+  <rect x="0" y="0" width="990" height="360" fill="#ffffff"/>
+
+  <!-- inputs -->
+  <rect class="box" x="12" y="40" width="160" height="70" rx="10"/>
+  <text class="t" x="24" y="66">Patient on WhatsApp</text>
+  <text class="s" x="24" y="86">EN · 中文 · Melayu · தமிழ்</text>
+  <text class="s" x="24" y="101">(or in-app simulator)</text>
+  <rect class="box" x="12" y="150" width="160" height="62" rx="10"/>
+  <text class="t" x="24" y="176">Clinic staff</text>
+  <text class="s" x="24" y="195">approve batch · handle cases</text>
+  <rect class="box" x="12" y="250" width="160" height="62" rx="10"/>
+  <text class="t" x="24" y="276">Morning scan</text>
+  <text class="s" x="24" y="295">recall records (SQLite)</text>
+
+  <!-- supervisor -->
+  <rect x="222" y="120" width="170" height="112" rx="12" fill="#e8f1fc" stroke="#2a78d6" stroke-width="1.6"/>
+  <text class="t" x="240" y="150">Supervisor</text>
+  <text class="s" x="240" y="170">rule-first router</text>
+  <text class="s" x="240" y="186">typed state · ≤ 8 steps</text>
+  <text class="s" x="240" y="202">per-patient memory</text>
+  <text class="s" x="240" y="218">(LangGraph checkpointer)</text>
+
+  <path class="l" d="M172,75 C200,75 205,140 222,150"/>
+  <path class="l" d="M172,181 L222,178"/>
+  <path class="l" d="M172,281 C200,281 205,215 222,205"/>
+
+  <!-- specialists -->
+  <g>
+    <rect class="box" x="452" y="14" width="250" height="68" rx="10"/>
+    <circle cx="470" cy="36" r="7" fill="#1baf7a"/>
+    <text class="t" x="484" y="41">Safety guard — always first</text>
+    <text class="s" x="466" y="61">4-language pre-screen, then model; escalates,</text>
+    <text class="s" x="466" y="75">records opt-outs. Nothing overrides it.</text>
+
+    <rect class="box" x="452" y="98" width="250" height="68" rx="10"/>
+    <circle cx="470" cy="120" r="7" fill="#eda100"/>
+    <text class="t" x="484" y="125">Conversation</text>
+    <text class="s" x="466" y="145">answers from the info sheet only,</text>
+    <text class="s" x="466" y="159">in the patient's own language</text>
+
+    <rect class="box" x="452" y="182" width="250" height="68" rx="10"/>
+    <circle cx="470" cy="204" r="7" fill="#e87ba4"/>
+    <text class="t" x="484" y="209">Scheduling</text>
+    <text class="s" x="466" y="229">only calendar writer; books only</text>
+    <text class="s" x="466" y="243">slots it offered to this patient</text>
+
+    <rect class="box" x="452" y="266" width="250" height="68" rx="10"/>
+    <circle cx="470" cy="288" r="7" fill="#eb6834"/>
+    <text class="t" x="484" y="293">Triage</text>
+    <text class="s" x="466" y="313">transparent overdue score; the model</text>
+    <text class="s" x="466" y="327">only writes the staff-facing reason</text>
+  </g>
+  <path class="l" d="M392,150 C420,120 425,60 452,50"/>
+  <path class="l" d="M392,165 C420,150 430,135 452,132"/>
+  <path class="l" d="M392,190 C420,200 430,214 452,216"/>
+  <path class="l" d="M392,210 C420,240 425,295 452,300"/>
+
+  <!-- outputs -->
+  <rect x="742" y="14" width="236" height="86" rx="10" fill="#fbeceb" stroke="#d03b3b" stroke-width="1.4"/>
+  <text class="t" x="756" y="40">Tier 3: always a human</text>
+  <text class="s" x="756" y="60">symptom · complaint · billing</text>
+  <text class="s" x="756" y="75">injection · impersonation</text>
+  <text class="s" x="756" y="90">English summary + holding reply</text>
+  <path class="l" d="M702,48 L742,52"/>
+
+  <rect class="box" x="742" y="118" width="236" height="96" rx="10"/>
+  <text class="t" x="756" y="143">One path out</text>
+  <text class="s" x="756" y="163">validator → consent → Tier-2 hold</text>
+  <text class="s" x="756" y="178">→ 24h window / template</text>
+  <text class="s" x="756" y="193">→ WhatsApp Cloud API</text>
+  <text class="s" x="756" y="208">(allowlist enforced twice)</text>
+  <path class="l" d="M702,132 L742,150"/>
+  <path class="l" d="M702,216 L742,190"/>
+
+  <rect class="box" x="742" y="232" width="236" height="102" rx="10"/>
+  <text class="t" x="756" y="257">Observability</text>
+  <text class="s" x="756" y="277">every step traced: agent, tool,</text>
+  <text class="s" x="756" y="292">model, tokens, latency</text>
+  <text class="s" x="756" y="307">14 golden + 22 adversarial evals</text>
+  <text class="s" x="756" y="322">Bedrock gateway · OpenRouter fallback</text>
+  <path class="dash" d="M702,300 L742,290"/>
+</svg>
