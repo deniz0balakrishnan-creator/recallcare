@@ -1,0 +1,50 @@
+# Canned info-sheet answers used ONLY by the mock LLM (so mock-mode replies are in the patient's language).
+# The live model translates the English info sheet itself.
+hours:
+  zh: "我们的营业时间：星期一至五 上午9:00–下午1:00、下午2:00–6:00、晚上7:00–9:00；星期六 上午9:00–下午1:00；星期日及公共假期休息。"
+  ms: "Waktu operasi kami: Isnin–Jumaat 9:00 pagi–1:00 petang, 2:00–6:00 petang dan 7:00–9:00 malam; Sabtu 9:00 pagi–1:00 petang; tutup hari Ahad dan cuti umum."
+  ta: "எங்கள் நேரம்: திங்கள்–வெள்ளி காலை 9:00–மதியம் 1:00, மதியம் 2:00–மாலை 6:00, மாலை 7:00–இரவு 9:00; சனி காலை 9:00–மதியம் 1:00; ஞாயிறு மற்றும் பொது விடுமுறை நாட்களில் மூடப்பட்டிருக்கும்."
+address:
+  zh: "我们的地址：Blk 218 Sunbird Walk, #01-12, Singapore 000218（虚构）。从（虚构的）Sunbird地铁站B出口步行5分钟，218座外有巴士站。"
+  ms: "Alamat kami: Blk 218 Sunbird Walk, #01-12, Singapore 000218 (rekaan). 5 minit berjalan kaki dari stesen MRT Sunbird (rekaan), Pintu B. Perhentian bas di luar Blk 218."
+  ta: "எங்கள் முகவரி: Blk 218 Sunbird Walk, #01-12, Singapore 000218 (கற்பனை). Sunbird MRT நிலையம் (கற்பனை) வெளியேறு B இலிருந்து 5 நிமிட நடை. Blk 218 க்கு வெளியே பேருந்து நிறுத்தம் உள்ளது."
+parking:
+  zh: "诊所旁边的220座有公共停车场，需使用停车固本或电子停车。"
+  ms: "Tempat letak kereta awam di Blk 220, bersebelahan klinik. Kupon atau sistem letak kereta elektronik digunakan."
+  ta: "மருத்துவமனைக்கு அருகில் Blk 220 இல் பொது வாகன நிறுத்துமிடம் உள்ளது. கூப்பன் அல்லது மின்னணு கட்டணம் பொருந்தும்."
+prices:
+  zh: "公布的价格范围（仅供参考，未计补贴）：检查及咨询 S$30–S$60；洗牙 S$60–S$120；牙科X光 S$20–S$50；牙周复诊 S$80–S$150；假牙复查 S$30–S$60。治疗前牙医会确认实际费用。"
+  ms: "Julat harga yang diterbitkan (anggaran, sebelum subsidi): pemeriksaan & konsultasi S$30–S$60; pembersihan karang gigi S$60–S$120; X-ray gigi S$20–S$50; rawatan susulan gusi S$80–S$150; semakan gigi palsu S$30–S$60. Doktor gigi akan mengesahkan kos sebenar sebelum rawatan."
+  ta: "வெளியிடப்பட்ட விலை வரம்புகள் (மானியத்திற்கு முன், மதிப்பீடு): பரிசோதனை & ஆலோசனை S$30–S$60; பல் சுத்தம் S$60–S$120; பல் எக்ஸ்-ரே S$20–S$50; ஈறு பராமரிப்பு மறுபரிசோதனை S$80–S$150; பல்செட் மறுபரிசோதனை S$30–S$60. சிகிச்சைக்கு முன் பல் மருத்துவர் சரியான செலவை உறுதிப்படுத்துவார்."
+subsidies:
+  zh: "持有CHAS卡、建国一代或立国一代配套的患者，部分牙科服务可能享有津贴。请带上您的卡，工作人员会在就诊时为您核实。"
+  ms: "Pemegang kad CHAS, Generasi Perintis dan Generasi Merdeka mungkin layak untuk subsidi bagi perkhidmatan pergigian tertentu. Sila bawa kad anda — kakitangan kami akan menyemak kelayakan anda semasa lawatan."
+  ta: "CHAS, முன்னோடித் தலைமுறை, மெர்டேக்கா தலைமுறை அட்டை வைத்திருப்பவர்கள் சில பல் சேவைகளுக்கு மானியம் பெறத் தகுதியுடையவர்களாக இருக்கலாம். உங்கள் அட்டையைக் கொண்டு வாருங்கள் — வருகையின் போது எங்கள் ஊழியர்கள் சரிபார்ப்பார்கள்."
+payment:
+  zh: "我们接受现金、NETS、PayNow及主要信用卡。"
+  ms: "Kami menerima tunai, NETS, PayNow dan kad kredit utama."
+  ta: "நாங்கள் பணம், NETS, PayNow மற்றும் முக்கிய கடன் அட்டைகளை ஏற்றுக்கொள்கிறோம்."
+languages:
+  zh: "我们的团队会说英语、华语、马来语和淡米尔语。"
+  ms: "Pasukan kami boleh bertutur dalam bahasa Inggeris, Mandarin, Melayu dan Tamil."
+  ta: "எங்கள் குழு ஆங்கிலம், மாண்டரின், மலாய் மற்றும் தமிழ் பேசும்."
+accessibility:
+  zh: "218座电梯大堂可无障碍进入，适合轮椅使用者。如到达时需要协助，请告诉我们。"
+  ms: "Akses tanpa tangga melalui lobi lif di Blk 218; mesra kerusi roda. Beritahu kami jika anda perlukan bantuan semasa tiba."
+  ta: "Blk 218 லிப்ட் வழியாக படிக்கட்டு இல்லாத அணுகல்; சக்கர நாற்காலிக்கு ஏற்றது. வந்தவுடன் உதவி தேவைப்பட்டால் எங்களிடம் சொல்லுங்கள்."
+what_to_bring:
+  zh: "请带上您的身份证及CHAS/建国一代/立国一代卡。如果您有定期服用的药物，请带上药物清单或药包给牙医看。"
+  ms: "Sila bawa NRIC anda dan kad CHAS/PG/MG jika ada. Jika anda mengambil ubat secara tetap, bawa senarai atau paket ubat untuk ditunjukkan kepada doktor gigi."
+  ta: "உங்கள் அடையாள அட்டை மற்றும் CHAS/PG/MG அட்டையைக் கொண்டு வாருங்கள். நீங்கள் வழக்கமாக மருந்துகள் எடுத்துக்கொண்டால், அவற்றின் பட்டியல் அல்லது பொட்டலங்களைக் கொண்டு வாருங்கள்."
+reschedule_policy:
+  zh: "如需更改或取消预约，请在此回复，或至少提前24小时致电我们。"
+  ms: "Anda boleh menukar atau membatalkan temujanji dengan membalas di sini atau menghubungi kami sekurang-kurangnya 24 jam lebih awal."
+  ta: "முன்பதிவை மாற்ற அல்லது ரத்து செய்ய இங்கே பதிலளிக்கவும் அல்லது குறைந்தது 24 மணி நேரத்திற்கு முன் எங்களை அழைக்கவும்."
+children:
+  zh: "欢迎儿童就诊。18岁以下的患者请由家长或监护人陪同。"
+  ms: "Kanak-kanak dialu-alukan. Pesakit bawah 18 tahun perlu datang bersama ibu bapa atau penjaga."
+  ta: "குழந்தைகள் வரவேற்கப்படுகிறார்கள். 18 வயதுக்குட்பட்டவர்கள் பெற்றோர் அல்லது பாதுகாவலருடன் வர வேண்டும்."
+booking:
+  zh: "您可以直接回复此聊天预约——我会为您提供可预约的时间。"
+  ms: "Anda boleh menempah dengan membalas sembang ini — saya akan menawarkan masa yang tersedia."
+  ta: "இந்த உரையாடலுக்குப் பதிலளித்து முன்பதிவு செய்யலாம் — கிடைக்கும் நேரங்களை நான் வழங்குவேன்."

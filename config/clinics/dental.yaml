@@ -1,0 +1,148 @@
+# Clinic configuration — ALL clinic-specific rules live here so a new clinic type is a config change.
+# FICTIONAL clinic. Every clinical interval below is ILLUSTRATIVE, CONFIGURABLE BY THE CLINIC,
+# and is an assumption for the demo — not medical guidance.
+
+clinic:
+  id: sunbird_dental
+  type: dental
+  name: Sunbird Family Dental
+  fictional: true
+  address: "Blk 218 Sunbird Walk, #01-12, Singapore 000218 (fictional)"
+  phone_display: "6555 0000 (fictional)"
+  timezone: Asia/Singapore
+  languages: [en, zh, ms, ta]
+  dentists:
+    - {id: D1, name: "Dr Lim Wei Jie"}
+    - {id: D2, name: "Dr Nur Aisyah Rahman"}
+    - {id: D3, name: "Dr Ravi Shankar"}
+
+calendar:
+  slot_minutes: 30
+  horizon_days: 14
+  # part_of_day boundaries used by find_slots
+  parts_of_day:
+    morning:   ["09:00", "13:00"]
+    afternoon: ["14:00", "18:00"]
+    evening:   ["18:00", "21:00"]
+  # opening sessions per weekday (0=Mon … 6=Sun)
+  sessions:
+    0: [["09:00", "13:00"], ["14:00", "18:00"], ["19:00", "21:00"]]
+    1: [["09:00", "13:00"], ["14:00", "18:00"], ["19:00", "21:00"]]
+    2: [["09:00", "13:00"], ["14:00", "18:00"], ["19:00", "21:00"]]
+    3: [["09:00", "13:00"], ["14:00", "18:00"], ["19:00", "21:00"]]
+    4: [["09:00", "13:00"], ["14:00", "18:00"], ["19:00", "21:00"]]
+    5: [["09:00", "13:00"]]
+    6: []
+  seed_occupancy: 0.45        # share of future slots already taken in the synthetic calendar
+  max_options_offered: 3
+  max_active_bookings_per_patient: 1
+
+# Recall intervals — ILLUSTRATIVE, CONFIGURABLE BY THE CLINIC (not medical guidance).
+visit_types:
+  routine_checkup:    {label: "Routine check-up",          interval_months: 6,  duration_min: 30}
+  scaling_polishing:  {label: "Scaling & polishing",       interval_months: 6,  duration_min: 45}
+  perio_maintenance:  {label: "Gum care (periodontal) review", interval_months: 3, duration_min: 60}
+  treatment_followup: {label: "Treatment follow-up",       interval_months: null, duration_min: 30, note: "due date set by the dentist in the treatment plan"}
+  child_checkup:      {label: "Child dental check-up",     interval_months: 6,  duration_min: 30}
+  denture_review:     {label: "Denture review",            interval_months: 12, duration_min: 30}
+
+# Deterministic urgency scoring (app/core/recall.py). Weights are configurable by the clinic.
+urgency:
+  per_overdue_month: 2.0       # points per month past due
+  overdue_month_cap: 24        # stop adding after this many months
+  visit_type_bonus:
+    treatment_followup: 20     # an unfinished treatment plan matters most
+    perio_maintenance: 10
+    denture_review: 3
+    child_checkup: 5
+  age_65_plus: 6               # older adults: higher oral-health risk, more likely to drift
+  chas_cardholder: 4           # cost-sensitive patients drift silently
+  long_gap_bonus_months: 12    # extra bonus once a patient is >12 months overdue
+  long_gap_bonus: 8
+  due_soon_days: 14            # also list patients due within this many days (score 0 + bonuses)
+  levels:                      # score thresholds → urgency label
+    urgent: 30
+    soon: 12
+
+outreach:
+  daily_batch_size: 12
+  renudge_after_days: 5        # single gentle re-nudge for non-responders
+  max_nudges: 1
+  no_response_after_days: 10   # after the re-nudge, mark no_response
+  window_hours: 24             # WhatsApp customer-service window
+  send_hours: ["09:00", "20:30"]   # never message patients outside these local hours
+
+# Staff-time assumptions for the Impact page (Assumption — stated, not measured).
+impact_assumptions:
+  minutes_per_manual_outreach: 4     # look up record + compose + send one reminder
+  minutes_per_booking_conversation: 6
+  minutes_per_logistics_answer: 2
+  minutes_per_triage_patient_review: 1.5
+
+# Deterministic pre-screen keyword lists (guard). Lower-cased substring match; Latin words also word-boundary checked.
+prescreen:
+  clinical:
+    en: ["pain", "pains", "painful", "ache", "toothache", "hurt", "hurts", "hurting", "sore", "swollen", "swelling", "swell", "bleed", "bleeding", "blood", "broken tooth", "broke my tooth", "chipped", "cracked", "loose tooth", "abscess", "pus", "infection", "infected", "fever", "medication", "medicine", "antibiotic", "antibiotics", "painkiller", "panadol", "ibuprofen", "paracetamol", "numb", "sensitive teeth", "ulcer", "wisdom tooth", "stitches", "jaw", "can't chew", "cannot chew", "dosage", "prescription", "pregnant", "diabetes"]
+    zh: ["痛", "疼", "肿", "流血", "出血", "血", "断了", "裂", "松动", "发炎", "化脓", "脓", "发烧", "药", "抗生素", "止痛", "敏感", "溃疡", "智齿", "缝线", "下巴", "怀孕"]
+    ms: ["sakit", "bengkak", "berdarah", "darah", "patah", "retak", "goyang", "nanah", "jangkitan", "demam", "ubat", "antibiotik", "ngilu", "ulser", "gigi bongsu", "jahitan", "rahang", "mengandung"]
+    ta: ["வலி", "வீக்கம்", "இரத்தம்", "ரத்தம்", "உடைந்த", "உடைந்து", "சீழ்", "காய்ச்சல்", "மருந்து", "தொற்று", "புண்", "கூச்சம்", "ஆடுகிறது"]
+  opt_out_exact:   # whole message (trimmed, case-insensitive, punctuation stripped) equals one of these
+    en: ["stop", "unsubscribe", "stop messaging me", "stop messages", "please stop", "opt out", "optout", "remove me", "don't message me", "do not message me", "do not contact me", "don't contact me"]
+    zh: ["停止", "退订", "取消订阅", "不要再发了", "不要再发", "别再发了", "请停止", "不要再联系我"]
+    ms: ["berhenti", "henti", "stop", "jangan hantar lagi", "jangan hubungi saya", "berhenti hantar", "tolong berhenti"]
+    ta: ["நிறுத்து", "நிறுத்தவும்", "நிறுத்துங்கள்", "செய்தி அனுப்ப வேண்டாம்", "தொடர்பு கொள்ள வேண்டாம்"]
+  opt_out_contains:  # phrases that signal opt-out inside a longer message
+    en: ["unsubscribe", "stop messaging", "stop sending", "stop texting", "don't message me", "do not message me", "don't contact me", "do not contact me", "remove me from", "opt out", "no more messages", "reply stop"]
+    zh: ["退订", "取消订阅", "不要再发", "别再发", "不要再联系", "停止发送"]
+    ms: ["berhenti hantar", "jangan hantar", "jangan hubungi", "berhenti menghantar", "tidak mahu terima mesej"]
+    ta: ["அனுப்ப வேண்டாம்", "தொடர்பு கொள்ள வேண்டாம்", "நிறுத்தவும்"]
+  human_request:
+    en: ["speak to a person", "speak to someone", "talk to a person", "talk to someone", "real person", "a human", "speak to a human", "talk to a human", "call me", "phone me", "speak to staff", "talk to staff", "receptionist", "nurse"]
+    zh: ["真人", "人工", "打电话给我", "给我打电话", "和工作人员", "跟工作人员", "护士", "前台"]
+    ms: ["bercakap dengan staf", "orang sebenar", "telefon saya", "hubungi saya", "cakap dengan orang", "jururawat", "kaunter"]
+    ta: ["மனிதரிடம்", "ஊழியரிடம்", "என்னை அழைக்கவும்", "அழையுங்கள்", "செவிலியர்"]
+  complaint:
+    en: ["complain", "complaint", "terrible", "rude", "unhappy", "disappointed", "worst", "lodge a report", "sue", "lawyer"]
+    zh: ["投诉", "不满", "太差", "没礼貌", "失望", "律师"]
+    ms: ["aduan", "mengadu", "tidak puas hati", "kurang ajar", "kecewa", "peguam"]
+    ta: ["புகார்", "அதிருப்தி", "மோசமான", "ஏமாற்றம்", "வழக்கறிஞர்"]
+  billing:
+    en: ["overcharged", "overcharge", "refund", "invoice", "my bill", "the bill", "billing", "charged me", "wrong charge"]
+    zh: ["账单", "多收", "退款", "收费错", "发票"]
+    ms: ["bil saya", "caj berlebihan", "bayaran balik", "invois", "tercaj"]
+    ta: ["கட்டணம் அதிகம்", "பணம் திரும்ப", "பில்", "விலைப்பட்டியல்"]
+  injection:
+    en: ["ignore previous", "ignore all previous", "ignore the previous", "ignore your instructions", "ignore all instructions", "disregard your", "disregard all", "disregard previous", "system prompt", "you are now", "developer mode", "jailbreak", "pretend you", "pretend to be", "act as", "roleplay", "role-play", "new instructions", "override", "admin mode", "list all patients", "all patients", "other patients", "every patient", "patient list", "database", "show me the records", "reveal your", "print your instructions"]
+    zh: ["忽略", "之前的指令", "以前的指令", "系统提示", "所有病人", "所有患者", "其他病人", "其他患者", "病人名单", "数据库", "扮演", "假装", "你现在是", "开发者模式"]
+    ms: ["abaikan arahan", "abaikan semua", "arahan sebelum", "arahan terdahulu", "semua pesakit", "pesakit lain", "senarai pesakit", "pangkalan data", "berpura-pura", "anda sekarang", "mod pembangun"]
+    ta: ["புறக்கணி", "முந்தைய அறிவுறுத்தல்", "அனைத்து நோயாளி", "மற்ற நோயாளி", "நோயாளிகள் பட்டியல்", "தரவுத்தளம்", "போல் நடி", "பாசாங்கு"]
+  impersonation:
+    en: ["this is dr", "this is doctor", "i am the dentist", "i'm the dentist", "i am dr", "i'm dr", "clinic manager", "as your admin", "staff here", "i work at the clinic", "on behalf of the clinic", "cancel all bookings", "cancel all appointments"]
+    zh: ["我是医生", "我是牙医", "我是诊所", "我是经理", "取消所有预约"]
+    ms: ["saya doktor", "saya doktor gigi", "saya pengurus klinik", "batalkan semua temujanji"]
+    ta: ["நான் மருத்துவர்", "நான் பல் மருத்துவர்", "நான் மேலாளர்", "அனைத்து முன்பதிவுகளையும் ரத்து"]
+  other_recipient:
+    en: ["send a message to", "send a whatsapp to", "send whatsapp to", "text this number", "message this number", "forward this to", "send to +", "send it to"]
+    zh: ["发消息给", "发给这个号码", "转发给"]
+    ms: ["hantar mesej kepada", "hantar whatsapp kepada", "hantar ke nombor"]
+    ta: ["இந்த எண்ணுக்கு அனுப்பு", "செய்தி அனுப்பு"]
+  abuse:
+    en: ["idiot", "stupid", "shut up", "fuck", "f*ck", "bastard", "damn you", "useless bot", "moron"]
+    zh: ["傻逼", "笨蛋", "白痴", "滚", "闭嘴", "去死"]
+    ms: ["bodoh", "babi", "celaka", "diam lah", "sial"]
+    ta: ["முட்டாள்", "மூடு வாயை", "நாயே"]
+
+# Info sheet — the ONLY source for logistics answers. Prices are published ranges (illustrative).
+info_sheet:
+  hours: "Mon–Fri 9:00am–1:00pm, 2:00pm–6:00pm and 7:00pm–9:00pm; Sat 9:00am–1:00pm; closed Sundays and public holidays."
+  address: "Blk 218 Sunbird Walk, #01-12, Singapore 000218 (fictional). 5 minutes' walk from the (fictional) Sunbird MRT station, Exit B. Bus stop right outside Blk 218."
+  parking: "Public carpark at Blk 220, next to the clinic. Coupon/electronic parking applies."
+  accessibility: "Step-free access via the lift lobby at Blk 218; wheelchair friendly. Tell us if you need help on arrival."
+  languages: "Our team speaks English, Mandarin, Malay and Tamil."
+  prices: "Published price ranges (illustrative, before any subsidy): check-up & consultation S$30–S$60; scaling & polishing S$60–S$120; dental X-ray S$20–S$50; gum care (periodontal) review S$80–S$150; denture review S$30–S$60. The dentist confirms the exact cost before any treatment."
+  subsidies: "CHAS, Pioneer Generation and Merdeka Generation cardholders may be eligible for subsidies on selected dental services. Please bring your card — our staff will check your eligibility at the visit."
+  payment: "We accept cash, NETS, PayNow and major credit cards."
+  what_to_bring: "Please bring your NRIC and any CHAS/PG/MG card. If you take regular medicines, bring the list or the packets so the dentist can see them."
+  reschedule_policy: "You can change or cancel your appointment by replying here or calling us at least 24 hours before."
+  children: "Children are welcome. Patients under 18 should come with a parent or guardian."
+  booking: "You can book by replying to this chat — I'll offer you available times."
