@@ -2,7 +2,7 @@
  "mode": "mock",
  "provider": "mock",
  "model": "mock-deterministic",
- "generated_at": "2026-09-27T02:17:50",
+ "generated_at": "2026-09-27T02:27:33",
  "elapsed_s": 2.2,
  "overall": {
   "passed": 36,

@@ -30,6 +30,7 @@ def report() -> dict:
                      "template_approved": s.wa_template_approved,
                      "allowlist_count": len(s.allowlist), "demo_phone_map": sorted(s.phone_overrides)},
         "dashboard": {"user": s.dashboard_user, "password": _set(s.dashboard_password),
+                      "judge_user": s.judge_user, "judge_password": _set(s.judge_password),
                       "session_secret": _set(s.session_secret)},
         "public_base_url": s.public_base_url or "(not set)",
         "llm_usage_ledger": _usage(),

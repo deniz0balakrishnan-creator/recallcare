@@ -66,6 +66,8 @@ class Settings:
 
     dashboard_user: str = field(default_factory=lambda: _env("DASHBOARD_USER", "staff"))
     dashboard_password: str = field(default_factory=lambda: _env("DASHBOARD_PASSWORD"))
+    judge_user: str = field(default_factory=lambda: _env("JUDGE_USER", "judge"))
+    judge_password: str = field(default_factory=lambda: _env("JUDGE_PASSWORD"))   # blank = no judge account
     session_secret: str = field(default_factory=lambda: _env("SESSION_SECRET"))
     database_path: str = field(default_factory=lambda: _env("DATABASE_PATH", "data/recallcare.db"))
     checkpoint_db_path: str = field(default_factory=lambda: _env("CHECKPOINT_DB_PATH", "data/checkpoints.db"))

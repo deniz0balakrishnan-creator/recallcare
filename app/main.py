@@ -109,12 +109,26 @@ async def login(request: Request):
         return RedirectResponse("/login?error=Too+many+attempts.+Wait+a+minute.", status_code=303)
     q.append(now)
     form = await request.form()
-    ok = hmac.compare_digest(str(form.get("username", "")), settings.dashboard_user) and \
-        hmac.compare_digest(str(form.get("password", "")), _dashboard_password)
-    if not ok:
+    user = _check_credentials(str(form.get("username", "")), str(form.get("password", "")))
+    if not user:
         return RedirectResponse("/login?error=Wrong+username+or+password", status_code=303)
-    request.session["user"] = settings.dashboard_user
+    request.session["user"] = user
     return RedirectResponse("/", status_code=303)
+
+
+def _check_credentials(username: str, password: str) -> str | None:
+    """Staff account, plus an optional separate judge account (JUDGE_PASSWORD) for the organisers.
+    Both compared in constant time; every action in the trace records which account did it."""
+    accounts = [(settings.dashboard_user, _dashboard_password)]
+    if settings.judge_password:
+        accounts.append((settings.judge_user, settings.judge_password))
+    match = None
+    for u, pw in accounts:
+        ok_user = hmac.compare_digest(username.encode(), u.encode())
+        ok_pw = hmac.compare_digest(password.encode(), pw.encode())
+        if ok_user and ok_pw:
+            match = u
+    return match
 
 
 @app.post("/logout")

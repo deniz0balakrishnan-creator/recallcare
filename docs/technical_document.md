@@ -3,7 +3,7 @@ title: "RecallCare — Technical document"
 subtitle: "Multi-agent dental patient follow-up · Team Binary Beasts (K2EZYJRZ) · NUS-ISS Show Me Your Agents 2026"
 ---
 
-> **Live:** `https://<LIVE_URL>` (staff login required; `/healthz` is public) · **Code:** `<GITHUB_URL>` · **Evals:** <EVAL_LINE>
+> **Live:** `https://<LIVE_URL>` (judge login in our submission email; `/healthz` is public) · **Code:** `<GITHUB_URL>` · **Evals:** <EVAL_LINE>
 > Everything in this system is **synthetic**: the clinic ("Sunbird Family Dental"), its 72 patients and their phone numbers are fictional.
 
 This document follows the seven judging criteria. Sections 1–7 map one-to-one to them; §8–10 cover deployment, cost and limitations. File paths refer to the repository.
@@ -67,7 +67,7 @@ The orchestration is a LangGraph `StateGraph` (`app/graph.py`). A **supervisor**
 
 ## 3.1 JSON tool protocol (and why)
 
-The organisers document three routes to Claude Sonnet 4.5 — an Ollama-compatible proxy (`/api/chat`), an OpenAI-compatible endpoint, and API Gateway → Lambda → Bedrock Converse JSON — and our adapter speaks all three, auto-detected from the URL. The Ollama proxy ignores the `tools` field, sometimes answers with Claude-Code-style `<invoke>` XML, rejects request bodies above ~8 KiB at its WAF and rate-limits bursts. So, on every route, each agent replies with exactly one JSON object:
+The organisers document three routes to Claude Sonnet 4.5 — an Ollama-compatible proxy (`/api/chat`), an OpenAI-compatible endpoint, and API Gateway → Lambda → Bedrock Converse JSON — and our adapter speaks all three, auto-detected from the URL. The Ollama proxy ignores the `tools` field, sometimes answers with Claude-Code-style `<invoke>` XML, rejects request bodies above ~8 KiB at its WAF and rate-limits bursts. The gateway is documented as not fully supporting LangChain/LangGraph. That caveat concerns LangChain's chat-model clients and their native tool binding (the starter kit's `ChatOllama.bind_tools` path). We use LangGraph **only for orchestration**; every model call is our own HTTP request in the gateway's documented JSON, so the unsupported path is never exercised. So, on every route, each agent replies with exactly one JSON object:
 
 ```
 {"thought_summary": "<one line>", "action": "<tool>|respond|handoff|escalate", "args": {...}}
@@ -141,10 +141,10 @@ Every supervisor step, guard decision, tool call (allowed or refused), model cal
 # 7. Platform and tooling
 
 * **LangGraph** used idiomatically: typed `StateGraph`, supervisor with `add_conditional_edges`, SQLite checkpointer keyed by patient thread, `recursion_limit` plus our own step cap, `draw_mermaid()` for documentation.
-* **FastAPI** for webhook, JSON actions and the server-rendered dashboard (Jinja + ~60 lines of vanilla JS, no CDN, no build step); **Pydantic v2** for every tool, verdict and protocol message; **SQLite** (WAL) for app data, trace and checkpoints; **pytest** (70 tests) and the eval harness.
+* **FastAPI** for webhook, JSON actions and the server-rendered dashboard (Jinja + ~60 lines of vanilla JS, no CDN, no build step); **Pydantic v2** for every tool, verdict and protocol message; **SQLite** (WAL) for app data, trace and checkpoints; **pytest** (78 tests) and the eval harness.
 * **Configuration over code:** clinic rules in `config/clinics/dental.yaml`; deterministic patient-facing texts in `config/messages.yaml`; WhatsApp templates in `config/whatsapp_templates.yaml`; all secrets in `.env` (documented in `.env.example`).
 * **Engineering hygiene:** pinned dependencies, pre-commit secret scan.
-* **Within the organisers' rules:** AWS usage limited to exactly one Lightsail instance plus Claude Sonnet 4.5 through the organisers' Bedrock JSON API (OpenRouter only as the organiser-approved fallback); a custom agent built with our own framework choice, as the hackathon rules allow; developed locally with an AI coding assistant (Claude Code).
+* **Within the organisers' rules:** AWS usage limited to exactly one Lightsail instance in the organisers' environment plus Claude Sonnet 4.5 reached only through their API Gateway (no direct Bedrock, no training or fine-tuning; OpenRouter only as an optional fallback); token use checked against the organisers' daily tracking; a custom agent built with our own framework choice, as the hackathon rules allow; developed locally with an AI coding assistant (Claude Code).
 
 # 8. Deployment on Amazon Lightsail
 

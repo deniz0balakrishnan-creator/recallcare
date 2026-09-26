@@ -41,6 +41,10 @@ graph TD;
 
 Full detail: [`docs/architecture.md`](docs/architecture.md) and the technical document in [`docs/`](docs/).
 
+## Try the live system (judges)
+
+Log in at the live URL with the **judge** account from our submission email → **Run demo scenario** → approve a patient on *Today* → open **Patient phone** and reply as the patient (any of the four languages, or try a prompt injection) → see every step on the **Trace** page. The real WhatsApp channel uses Meta's test number, which only reaches pre-registered phones, so the in-app phone follows exactly the same rules.
+
 ## Quick start (zero credentials)
 
 Requires Python 3.11+.
@@ -53,7 +57,7 @@ make demo        # mock LLM + in-app phone simulator → http://127.0.0.1:8000  
 In the dashboard press **Run demo scenario**, approve the batch, open **Patient phone** and reply as Mdm Tan (quick-reply chips are provided). Then:
 
 ```bash
-make test        # 70 unit/integration tests (mock LLM, simulator channel)
+make test        # 78 unit/integration tests (mock LLM, simulator channel)
 make eval        # 36 eval scenarios in mock mode (free, deterministic)
 ```
 
@@ -76,6 +80,7 @@ Copy `.env.example` to `.env` (gitignored). Every variable is documented there; 
 | `WHATSAPP_APP_SECRET`, `WHATSAPP_VERIFY_TOKEN` | Webhook signature check (`X-Hub-Signature-256`) and GET verification | empty |
 | `WHATSAPP_TEMPLATE_NAME`, `WHATSAPP_TEMPLATE_APPROVED` | Custom template; until approved, Meta's `hello_world` is used on the real channel | `recall_reminder`, `false` |
 | `DASHBOARD_USER`, `DASHBOARD_PASSWORD`, `SESSION_SECRET` | Staff login (the dashboard shows patient data, even synthetic) | `staff`, random |
+| `JUDGE_USER`, `JUDGE_PASSWORD` | Optional separate login for the organisers/judges (traced under its own name) | `judge`, none |
 | `AUTO_JOBS` | Morning triage scan + hourly single re-nudge within sending hours | `true` |
 | `AS_OF_DATE` | Freeze "today" for repeatable demos | real date (SGT) |
 

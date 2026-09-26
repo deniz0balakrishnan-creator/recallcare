@@ -87,3 +87,21 @@ def test_simulator_round_trip(client):
     assert r["ok"] and r["result"]["outcome"].startswith("offer")
     msgs = client.get("/api/simulator/1/messages").json()["messages"]
     assert msgs[-1]["body"].startswith("以下是可预约的时间")
+
+
+def test_judge_account_is_separate_and_traced(client, monkeypatch):
+    monkeypatch.setattr(settings, "judge_password", "judge-pw")
+    r = client.post("/login", data={"username": "judge", "password": "pw-test"}, follow_redirects=False)
+    assert "error" in r.headers["location"]                     # staff password doesn't open the judge account
+    r = client.post("/login", data={"username": "judge", "password": "judge-pw"}, follow_redirects=False)
+    assert r.headers["location"] == "/"
+    client.post("/api/triage/run")
+    client.post("/api/batch/approve", json={"patient_ids": [1]})
+    by = db.q1("SELECT args FROM trace_events WHERE action='approve_outreach'")["args"]
+    assert '"by": "judge"' in by
+
+
+def test_no_judge_account_unless_configured(client, monkeypatch):
+    monkeypatch.setattr(settings, "judge_password", "")
+    r = client.post("/login", data={"username": "judge", "password": ""}, follow_redirects=False)
+    assert "error" in r.headers["location"]

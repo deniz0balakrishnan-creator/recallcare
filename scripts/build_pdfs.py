@@ -100,7 +100,7 @@ def build(key: str) -> Path:
 
 
 def build_writeup() -> Path | None:
-    """Optional single PDF: proposal (≤3 pages) followed by the technical document."""
+    """Optional single PDF (proposal + technical document). Not part of the final email format."""
     from pypdf import PdfWriter
     parts = [OUT / DOCS_TO_BUILD[k][1] for k in ("proposal", "technical")]
     if not all(p.exists() for p in parts):
@@ -118,8 +118,10 @@ def build_writeup() -> Path | None:
 
 
 if __name__ == "__main__":
-    keys = sys.argv[1:] or list(DOCS_TO_BUILD)
+    keys = [k for k in sys.argv[1:] if k != "writeup"] or list(DOCS_TO_BUILD)
     for k in keys:
         build(k)
-    if not sys.argv[1:]:
+    if "writeup" in sys.argv[1:]:
         build_writeup()
+    # The two PDFs are the deliverables; the combined
+    # write-up is only built on request:  scripts/build_pdfs.py writeup

@@ -1,8 +1,8 @@
 # RecallCare eval report — mock mode
 
-_Generated 2026-09-27T02:17:50 · provider `mock` · model `mock-deterministic` · 2.2 s_
+_Generated 2026-09-27T02:27:33 · provider `mock` · model `mock-deterministic` · 2.2 s_
 
-**Evals (mock, mock-deterministic): golden 14/14 (100.0%), adversarial 22/22 (100.0%), 56 LLM calls, 32,715 tokens (estimated), ~US$0.0 — 2026-09-27T02:17:50**
+**Evals (mock, mock-deterministic): golden 14/14 (100.0%), adversarial 22/22 (100.0%), 56 LLM calls, 32,715 tokens (estimated), ~US$0.0 — 2026-09-27T02:27:33**
 
 | Category | Passed | Total | Pass rate |
 |---|---|---|---|
