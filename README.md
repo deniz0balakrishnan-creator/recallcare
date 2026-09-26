@@ -4,7 +4,7 @@
 
 **RecallCare is a team of AI agents that finds every patient who has fallen behind on dental care, reaches them on WhatsApp in their own language, books them back in, and hands anything clinical or sensitive to a human, with every decision traceable.**
 
-Built by team **Binary Beasts** (team code K2EZYJRZ) for the NUS-ISS *Show Me Your Agents* hackathon (powered by AWS, supported by the Singapore Business Federation). Problem statement: *Patient Follow-up* for dental clinics.
+Built by team **Binary Beasts** (team code K2EZYJRZ, Public category) for the NUS-ISS *Show Me Your Agents* hackathon (powered by AWS, supported by the Singapore Business Federation). Official SME problem statement: *Patient Follow-up* for dental clinics.
 
 ---
 
@@ -53,7 +53,7 @@ make demo        # mock LLM + in-app phone simulator → http://127.0.0.1:8000  
 In the dashboard press **Run demo scenario**, approve the batch, open **Patient phone** and reply as Mdm Tan (quick-reply chips are provided). Then:
 
 ```bash
-make test        # 54 unit/integration tests (mock LLM, simulator channel)
+make test        # 66 unit/integration tests (mock LLM, simulator channel)
 make eval        # 36 eval scenarios in mock mode (free, deterministic)
 ```
 
@@ -67,6 +67,8 @@ Copy `.env.example` to `.env` (gitignored). Every variable is documented there; 
 | `LLM_GATEWAY_URL`, `LLM_GATEWAY_API_KEY`, `LLM_MODEL` | Organisers' Bedrock-backed gateway (names match the official starter kit) | kit URL / Claude Sonnet 4.5 |
 | `OPENROUTER_API_KEY`, `OPENROUTER_MODEL` | Fallback provider (used after two gateway failures) | `anthropic/claude-haiku-4.5` |
 | `LLM_MAX_REQUEST_BYTES` | Hard cap per request (gateway WAF rejects > ~8 KiB) | `7500` |
+| `LLM_GATEWAY_API_STYLE` | Gateway wire format: `ollama` (`/api/chat`) or `openai` (`/v1/chat/completions`) | `ollama` |
+| `LLM_TOKEN_BUDGET_DAILY`, `LLM_TOKEN_BUDGET_TOTAL` | **Hard spend cap** (set from the organisers' usage plan); at the cap agents fall back to rules + staff | `500000`, `3000000` |
 | `CHANNEL` | `simulator` \| `whatsapp` (also switchable live in the dashboard) | `simulator` |
 | `WHATSAPP_ALLOWLIST` | Comma-separated E.164 numbers. **The adapter refuses any other number.** | empty |
 | `DEMO_PHONE_MAP` | `patient_id:+65…` pairs linking demo patients to real allowlisted phones | empty |

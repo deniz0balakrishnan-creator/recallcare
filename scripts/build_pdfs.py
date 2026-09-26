@@ -99,7 +99,27 @@ def build(key: str) -> Path:
     return pdf
 
 
+def build_writeup() -> Path | None:
+    """Optional single PDF: proposal (≤3 pages) followed by the technical document."""
+    from pypdf import PdfWriter
+    parts = [OUT / DOCS_TO_BUILD[k][1] for k in ("proposal", "technical")]
+    if not all(p.exists() for p in parts):
+        return None
+    w = PdfWriter()
+    for p in parts:
+        w.append(str(p))
+    w.add_metadata({"/Title": "RecallCare — write-up (business proposal + technical document)",
+                    "/Author": "Team Binary Beasts (K2EZYJRZ)"})
+    out = OUT / "RecallCare_writeup_K2EZYJRZ.pdf"
+    with open(out, "wb") as f:
+        w.write(f)
+    print(f"built {out.relative_to(ROOT)} (proposal + technical document)")
+    return out
+
+
 if __name__ == "__main__":
     keys = sys.argv[1:] or list(DOCS_TO_BUILD)
     for k in keys:
         build(k)
+    if not sys.argv[1:]:
+        build_writeup()

@@ -111,6 +111,7 @@ Pre-approved safety texts bypass the Tier-2 hold (a sensitive patient reporting 
 | Abuse, resource exhaustion | rate limit per sender; 1,500-char cap (longer messages never reach a model); one booking per patient via chat; loop caps (8 supervisor steps, 3 inner steps) | A13, A14, A17, loop test |
 | Model failure / malformed output | Pydantic validation, one repair, then escalation; gateway → OpenRouter fallback | A21, repair test |
 | Webhook forgery / replay | HMAC signature check; message-id de-duplication | web tests |
+| Cost overrun (the organisers pause accounts over the usage plan) | hard token budget per day and in total, kept in a separate usage ledger that also counts eval runs; calls refused at the cap, agents degrade to rules + staff escalation (`ai_unavailable`); minimum gap between calls; request size cap | budget tests |
 | Secret leakage | secrets only in `.env` (gitignored, `chmod 600` on server); pre-commit secret scan; nothing secret in traces (phones masked) | hook |
 
 ## 5.2 Output validator (`app/core/validator.py`)
@@ -140,9 +141,10 @@ Every supervisor step, guard decision, tool call (allowed or refused), model cal
 # 7. Platform and tooling
 
 * **LangGraph** used idiomatically: typed `StateGraph`, supervisor with `add_conditional_edges`, SQLite checkpointer keyed by patient thread, `recursion_limit` plus our own step cap, `draw_mermaid()` for documentation.
-* **FastAPI** for webhook, JSON actions and the server-rendered dashboard (Jinja + ~60 lines of vanilla JS, no CDN, no build step); **Pydantic v2** for every tool, verdict and protocol message; **SQLite** (WAL) for app data, trace and checkpoints; **pytest** (54 tests) and the eval harness.
+* **FastAPI** for webhook, JSON actions and the server-rendered dashboard (Jinja + ~60 lines of vanilla JS, no CDN, no build step); **Pydantic v2** for every tool, verdict and protocol message; **SQLite** (WAL) for app data, trace and checkpoints; **pytest** (66 tests) and the eval harness.
 * **Configuration over code:** clinic rules in `config/clinics/dental.yaml`; deterministic patient-facing texts in `config/messages.yaml`; WhatsApp templates in `config/whatsapp_templates.yaml`; all secrets in `.env` (documented in `.env.example`).
 * **Engineering hygiene:** pinned dependencies, pre-commit secret scan.
+* **Within the organisers' rules:** AWS usage limited to exactly one Lightsail instance plus Claude Sonnet 4.5 through the organisers' Bedrock JSON API (OpenRouter only as the organiser-approved fallback); a custom agent built with our own framework choice, as the hackathon rules allow; developed locally with an AI coding assistant (Claude Code).
 
 # 8. Deployment on Amazon Lightsail
 
@@ -159,7 +161,7 @@ Staff browser ──HTTPS──────────────────�
 
 # 9. Cost
 
-Deterministic code handles scoring, slot search, pre-screening, short replies and all confirmations, so most turns need one or two small model calls (every request < 7.5 KB, capped outputs). Measured in live evals: **<TOKENS_PER_CONVERSATION> tokens per conversation ≈ <COST_PER_CONVERSATION>** at list price (Assumption: Claude Sonnet 4.5 at US$3 / US$15 per million input/output tokens). The daily triage batch is one call. Lightsail medium is a fixed monthly cost inside the USD 100 credit.
+Deterministic code handles scoring, slot search, pre-screening, short replies and all confirmations, so most turns need one or two small model calls (every request < 7.5 KB, capped outputs). Spending is **capped in code**: `app/llm/budget.py` refuses any call once the daily or total token budget (set from the organisers' usage plan) is reached, and the dashboard shows usage against both caps. Measured in live evals: **<TOKENS_PER_CONVERSATION> tokens per conversation ≈ <COST_PER_CONVERSATION>** at list price (Assumption: Claude Sonnet 4.5 at US$3 / US$15 per million input/output tokens). The daily triage batch is one call. Lightsail medium is a fixed monthly cost inside the USD 100 credit.
 
 # 10. Limitations and future work (honest)
 

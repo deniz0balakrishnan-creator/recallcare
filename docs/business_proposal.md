@@ -57,7 +57,7 @@ Every step is traced — which agent, which tool, which model, tokens and latenc
 
 **Per month:** 264 × 20% = **53 recovered visits ≈ S$5,300** revenue; staff time 264×4 + 53×6 = 1,374 min ≈ **23 hours ≈ S$410**; model cost `<COST_PER_CONVERSATION>` per conversation (measured) ≈ `<MONTHLY_LLM_COST>`. Even at a 5% rebooking rate the clinic recovers ~13 visits (≈ S$1,300) a month.
 
-**Pricing (illustrative):** **S$149 per clinic per month** (up to 3 dentists, unlimited recall conversations) + WhatsApp message fees passed through at Meta's published rate. Onboarding is a configuration file, not a software project.
+**Pricing (illustrative):** **S$149 per clinic per month** (up to 3 dentists, unlimited recall conversations) + WhatsApp message fees passed through at Meta's published rate. Onboarding is a configuration file, not a software project, and model spend is **capped in code** (a hard daily/total token budget), so an SME never gets a surprise bill.
 
 ## 7. Scale path and data protection
 
