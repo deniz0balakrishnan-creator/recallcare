@@ -21,6 +21,9 @@ DOCS = ROOT / "docs"
 OUT = DOCS / "pdf"
 PANDOC = shutil.which("pandoc") or "/opt/anaconda3/bin/pandoc"
 
+# The business proposal is limited to 3 pages. The build fails if it isn't.
+PAGE_LIMITS = {"proposal": 3}
+
 DOCS_TO_BUILD = {
     "proposal": ("business_proposal.md", "business_proposal.pdf", {"size": "9.6pt", "margin": "1.45cm"}),
     "technical": ("technical_document.md", "technical_document.pdf", {"size": "10pt", "margin": "1.8cm"}),
@@ -96,6 +99,9 @@ def build(key: str) -> Path:
     except Exception:
         pages = "?"
     print(f"built {pdf.relative_to(ROOT)} ({pages} pages)")
+    limit = PAGE_LIMITS.get(key)
+    if limit and isinstance(pages, int) and pages > limit:
+        raise SystemExit(f"ERROR: {out_name} has {pages} pages; the limit is {limit}. Shorten it.")
     return pdf
 
 
