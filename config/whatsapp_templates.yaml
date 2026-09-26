@@ -4,7 +4,7 @@
 #
 # Meta rules respected: category Utility, no promotional wording, variables are not at the very
 # start or end of the body, every variable has a sample value, footer <= 60 chars.
-# Translations should be checked by a native speaker before production use.
+# Translations were proofread once; a native-speaker check is recommended before production use.
 
 templates:
   recall_reminder:
@@ -24,7 +24,7 @@ templates:
         samples: ["美玲", "Sunbird Family Dental", "例行口腔检查"]
       ms:
         meta_language_code: ms
-        body: "Hai {{1}}, ini {{2}}. Rekod kami menunjukkan anda perlu membuat {{3}}. Sila balas mesej ini untuk memilih masa yang sesuai, atau balas STOP untuk berhenti menerima peringatan ini."
+        body: "Hai {{1}}, ini {{2}}. Rekod kami menunjukkan sudah tiba masanya untuk {{3}} anda. Sila balas mesej ini untuk memilih masa yang sesuai, atau balas STOP untuk berhenti menerima peringatan ini."
         footer: "Peringatan automatik. Bukan untuk kecemasan."
         samples: ["Siti", "Sunbird Family Dental", "pemeriksaan gigi rutin"]
       ta:

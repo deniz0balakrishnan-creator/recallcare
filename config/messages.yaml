@@ -6,19 +6,19 @@ holding_clinical:
   en: "Thank you for telling us. I've passed this to our clinic team; someone will contact you shortly. If this is an emergency, call 995."
   zh: "谢谢您告诉我们。我已将此转交给诊所团队，工作人员会尽快联系您。如遇紧急情况，请拨打995。"
   ms: "Terima kasih kerana memberitahu kami. Saya telah menyampaikan perkara ini kepada pasukan klinik; seseorang akan menghubungi anda tidak lama lagi. Jika ini kecemasan, hubungi 995."
-  ta: "எங்களிடம் தெரிவித்ததற்கு நன்றி. இதை எங்கள் மருத்துவமனைக் குழுவிடம் ஒப்படைத்துள்ளேன்; விரைவில் ஒருவர் உங்களைத் தொடர்புகொள்வார். இது அவசரநிலை என்றால், 995 ஐ அழைக்கவும்."
+  ta: "எங்களிடம் தெரிவித்ததற்கு நன்றி. இதை எங்கள் கிளினிக் குழுவிடம் ஒப்படைத்துள்ளேன்; விரைவில் ஒருவர் உங்களைத் தொடர்புகொள்வார். இது அவசரநிலை என்றால், 995 ஐ அழைக்கவும்."
 
 holding_general:
   en: "Thank you. I've passed your message to our clinic team; someone will contact you shortly."
   zh: "谢谢。我已将您的信息转交给诊所团队，工作人员会尽快联系您。"
   ms: "Terima kasih. Saya telah menyampaikan mesej anda kepada pasukan klinik; seseorang akan menghubungi anda tidak lama lagi."
-  ta: "நன்றி. உங்கள் செய்தியை எங்கள் மருத்துவமனைக் குழுவிடம் ஒப்படைத்துள்ளேன்; விரைவில் ஒருவர் உங்களைத் தொடர்புகொள்வார்."
+  ta: "நன்றி. உங்கள் செய்தியை எங்கள் கிளினிக் குழுவிடம் ஒப்படைத்துள்ளேன்; விரைவில் ஒருவர் உங்களைத் தொடர்புகொள்வார்."
 
 holding_security:
   en: "I can only help with your own appointments at {clinic}. I've passed your message to our clinic team."
   zh: "我只能协助处理您本人在{clinic}的预约。我已将您的信息转交给诊所团队。"
   ms: "Saya hanya boleh membantu dengan temujanji anda sendiri di {clinic}. Saya telah menyampaikan mesej anda kepada pasukan klinik."
-  ta: "{clinic} இல் உங்கள் சொந்த முன்பதிவுகளுக்கு மட்டுமே என்னால் உதவ முடியும். உங்கள் செய்தியை எங்கள் மருத்துவமனைக் குழுவிடம் ஒப்படைத்துள்ளேன்."
+  ta: "{clinic} இல் உங்கள் சொந்த முன்பதிவுகளுக்கு மட்டுமே என்னால் உதவ முடியும். உங்கள் செய்தியை எங்கள் கிளினிக் குழுவிடம் ஒப்படைத்துள்ளேன்."
 
 opt_out_confirm:
   en: "You won't receive any more reminders from {clinic}. If you change your mind, just call us at {phone}."
@@ -46,15 +46,15 @@ no_slots:
 
 booking_confirm:
   en: "You're booked: {when} with {dentist} at {clinic}, {address}. Reply CHANGE if you need a different time. See you then!"
-  zh: "预约成功：{when}，{dentist}，地点：{clinic}，{address}。如需更改时间，请回复 CHANGE。到时见！"
+  zh: "预约成功！时间：{when}；医生：{dentist}；地点：{clinic}，{address}。如需更改时间，请回复 CHANGE。到时见！"
   ms: "Temujanji anda telah ditempah: {when} bersama {dentist} di {clinic}, {address}. Balas CHANGE jika anda perlukan masa lain. Jumpa nanti!"
-  ta: "உங்கள் முன்பதிவு உறுதி: {when}, {dentist}, {clinic}, {address}. வேறு நேரம் வேண்டுமானால் CHANGE என பதிலளிக்கவும். சந்திப்போம்!"
+  ta: "உங்கள் முன்பதிவு உறுதிசெய்யப்பட்டது: {when}, {dentist}, {clinic}, {address}. வேறு நேரம் வேண்டுமானால் CHANGE என பதிலளிக்கவும். சந்திப்போம்!"
 
 reschedule_confirm:
   en: "Done. Your appointment is now {when} with {dentist} at {clinic}. Your previous time has been released."
-  zh: "已完成。您的预约已改为{when}，{dentist}，地点：{clinic}。原来的时间已取消。"
-  ms: "Selesai. Temujanji anda kini pada {when} bersama {dentist} di {clinic}. Masa asal anda telah dilepaskan."
-  ta: "முடிந்தது. உங்கள் முன்பதிவு இப்போது {when}, {dentist}, {clinic}. முந்தைய நேரம் விடுவிக்கப்பட்டது."
+  zh: "已为您改期：{when}，医生：{dentist}，地点：{clinic}。原来的预约已取消。"
+  ms: "Selesai. Temujanji anda kini pada {when} bersama {dentist} di {clinic}. Temujanji asal anda telah dibatalkan."
+  ta: "முடிந்தது. உங்கள் முன்பதிவு இப்போது {when}, {dentist}, {clinic}. முந்தைய முன்பதிவு ரத்து செய்யப்பட்டது."
 
 decline_ack:
   en: "No problem, thank you for letting us know. We won't send more reminders for this visit. You can message us any time if you'd like to book."
@@ -72,11 +72,11 @@ booking_limit:
   en: "I can book one appointment for you through this chat. For anything more, our clinic team will help you directly."
   zh: "我可以通过此聊天为您预约一次。如需更多预约，诊所团队会直接为您安排。"
   ms: "Saya boleh menempah satu temujanji untuk anda melalui sembang ini. Untuk lebih daripada itu, pasukan klinik kami akan membantu anda secara terus."
-  ta: "இந்த உரையாடல் மூலம் உங்களுக்கு ஒரு முன்பதிவு மட்டுமே செய்ய முடியும். மேலும் தேவைகளுக்கு எங்கள் மருத்துவமனைக் குழு நேரடியாக உதவும்."
+  ta: "இந்த உரையாடல் மூலம் உங்களுக்கு ஒரு முன்பதிவு மட்டுமே செய்ய முடியும். மேலும் தேவைகளுக்கு எங்கள் கிளினிக் குழு நேரடியாக உதவும்."
 
 already_booked:
   en: "You already have an appointment on {when} with {dentist}. Reply CHANGE if you'd like a different time."
-  zh: "您已预约{when}，{dentist}。如需更改时间，请回复 CHANGE。"
+  zh: "您已有预约：{when}，医生：{dentist}。如需更改时间，请回复 CHANGE。"
   ms: "Anda sudah ada temujanji pada {when} bersama {dentist}. Balas CHANGE jika anda mahu masa lain."
   ta: "உங்களுக்கு ஏற்கனவே {when}, {dentist} உடன் முன்பதிவு உள்ளது. வேறு நேரம் வேண்டுமானால் CHANGE என பதிலளிக்கவும்."
 
@@ -89,26 +89,26 @@ invalid_option:
 slot_taken:
   en: "Sorry, that time was just taken. Here are other options:\n{options}"
   zh: "抱歉，该时间刚刚被预约。以下是其他选择：\n{options}"
-  ms: "Maaf, masa itu baru sahaja ditempah. Berikut pilihan lain:\n{options}"
+  ms: "Maaf, masa itu baru sahaja ditempah. Berikut ialah pilihan lain:\n{options}"
   ta: "மன்னிக்கவும், அந்த நேரம் இப்போதுதான் முன்பதிவு செய்யப்பட்டது. மற்ற விருப்பங்கள்:\n{options}"
 
 ask_when:
   en: "Happy to help you book your {visit}. Which day and time suit you? For example: \"Tuesday morning\" or \"Saturday\"."
   zh: "很乐意帮您预约{visit}。您哪天什么时间方便？例如：“星期二上午”或“星期六”。"
-  ms: "Saya sedia membantu anda menempah {visit}. Hari dan masa bila yang sesuai? Contohnya: \"Selasa pagi\" atau \"Sabtu\"."
+  ms: "Saya sedia membantu anda menempah {visit}. Hari dan masa apakah yang sesuai untuk anda? Contohnya: \"Selasa pagi\" atau \"Sabtu\"."
   ta: "உங்கள் {visit} முன்பதிவு செய்ய உதவுகிறேன். எந்த நாள், நேரம் உங்களுக்கு வசதி? உதாரணமாக: \"செவ்வாய் காலை\" அல்லது \"சனிக்கிழமை\"."
 
 thanks_ack:
   en: "You're welcome! Message us any time."
   zh: "不客气！有需要随时联系我们。"
   ms: "Sama-sama! Hubungi kami bila-bila masa."
-  ta: "நன்றி! எப்போது வேண்டுமானாலும் எங்களுக்குச் செய்தி அனுப்புங்கள்."
+  ta: "மகிழ்ச்சி! எப்போது வேண்டுமானாலும் எங்களுக்குச் செய்தி அனுப்புங்கள்."
 
 fallback_safe:
   en: "Thank you for your message. Our clinic team will get back to you shortly."
   zh: "谢谢您的信息。诊所团队会尽快回复您。"
   ms: "Terima kasih atas mesej anda. Pasukan klinik kami akan menghubungi anda tidak lama lagi."
-  ta: "உங்கள் செய்திக்கு நன்றி. எங்கள் மருத்துவமனைக் குழு விரைவில் உங்களைத் தொடர்புகொள்ளும்."
+  ta: "உங்கள் செய்திக்கு நன்றி. எங்கள் கிளினிக் குழு விரைவில் உங்களைத் தொடர்புகொள்ளும்."
 
 cancel_confirm:
   en: "Your appointment on {when} has been cancelled. Message us any time if you'd like to book again."
