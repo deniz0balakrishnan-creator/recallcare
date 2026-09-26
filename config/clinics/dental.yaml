@@ -61,8 +61,8 @@ urgency:
   long_gap_bonus: 8
   due_soon_days: 14            # also list patients due within this many days (score 0 + bonuses)
   levels:                      # score thresholds → urgency label
-    urgent: 30
-    soon: 12
+    urgent: 50
+    soon: 20
 
 outreach:
   daily_batch_size: 12

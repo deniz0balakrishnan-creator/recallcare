@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Conversations{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h1>Conversations</h1><p class="muted">Every thread in the patient's own language, with an English gloss for staff.</p></div>
+  <span class="spacer"></span>
+  <label class="chip" style="cursor:pointer"><input id="gloss-toggle" type="checkbox" checked onchange="RC.toggleGloss(this)" style="margin:0"> English gloss</label>
+</div>
+<div class="threads">
+  <nav class="card flush tlist" aria-label="Threads">
+    {% for t in threads %}
+    <a href="/conversations?pid={{ t.id }}" class="{{ 'on' if t.id == sel }}">
+      <div style="display:flex;gap:.4rem;align-items:center"><strong>{{ t.full_name }}</strong><span class="lang">{{ t.preferred_language|upper }}</span>
+        <span class="spacer"></span><span class="chip st-{{ t.status }}"><span class="dot"></span>{{ t.status|replace('_',' ') }}</span></div>
+      <div class="last">{{ t.last_body }}</div>
+    </a>
+    {% else %}<p class="empty" style="padding:1rem">No conversations yet. Approve today's batch to start.</p>{% endfor %}
+  </nav>
+
+  {% if detail %}{% set p = detail.p %}{% set f = detail.f %}
+  <section class="card" aria-label="Thread">
+    <div class="card-h">
+      <h2>{{ p.full_name }}</h2><span class="lang">{{ langs[p.preferred_language] }}</span>
+      <span class="chip st-{{ f.status }}" title="Follow-up state machine"><span class="dot"></span>{{ (f.status or 'due')|replace('_',' ') }}</span>
+      {% if p.sensitive %}<span class="chip tier2"><span class="dot"></span>Sensitive · Tier 2</span>{% endif %}
+      {% if p.opted_out %}<span class="chip st-opted_out"><span class="dot"></span>Opted out</span>{% endif %}
+      <span class="spacer"></span>
+      <span class="chip" title="WhatsApp only allows free text within 24h of the patient's last message">{{ '🟢 24h window open' if detail.window_open else '⏸ window closed · templates only' }}</span>
+      <a class="btn" href="/trace?pid={{ p.id }}">Trace</a>
+    </div>
+    <div class="grid cols-2">
+      <div class="chat glossable" id="chat">
+        {% for m in detail.msgs %}
+        <div class="msg {{ 'out' if m.direction=='out' else 'in' }} {{ 'blocked' if m.status=='blocked' }} {{ 'pending' if m.status=='pending_approval' }} {{ 'tpl' if m.kind=='template' }}"><span class="body">{{ m.body }}</span>
+          {% if m.gloss_en and m.gloss_en != m.body %}<div class="gloss">EN: {{ m.gloss_en }}</div>{% endif %}
+          <div class="meta"><span>{{ m.ts[5:10] }} {{ m.ts[11:16] }}</span>
+            {% if m.direction=='out' %}<span>{{ m.agent or '' }}</span>{% endif %}
+            {% if m.kind=='template' %}<span>template: {{ m.template_name }}</span>{% endif %}
+            {% if m.status not in ('sent','received') %}<span><strong>{{ m.status|replace('_',' ') }}</strong></span>{% endif %}
+            {% if m.run_id %}<a href="/trace?run={{ m.run_id }}">trace</a>{% endif %}</div>
+        </div>
+        {% else %}<p class="empty">No messages.</p>{% endfor %}
+      </div>
+      <div>
+        <h3>Patient memory</h3>
+        <dl class="kv">
+          <dt>Preferred name</dt><dd>{{ p.preferred_name }}</dd>
+          <dt>Age</dt><dd>{{ detail.age }}{% if p.chas_tier!='none' %} · CHAS {{ p.chas_tier|title }}{% endif %}{% if p.generation_card!='none' %} · {{ p.generation_card|title }} Gen.{% endif %}</dd>
+          <dt>Due for</dt><dd>{{ (f.visit_type or '')|replace('_',' ') }}{% if f.due_date %} · since {{ f.due_date }}{% endif %}</dd>
+          <dt>Booking</dt><dd>{{ detail.booking.when ~ ' · ' ~ detail.booking.dentist if detail.booking else 'none' }}</dd>
+          <dt>Consent</dt><dd>{{ 'WhatsApp consent on record' if p.whatsapp_consent else 'no consent — never messaged' }}</dd>
+          <dt>Re-nudges</dt><dd>{{ f.nudge_count or 0 }} of 1</dd>
+        </dl>
+        <h3 style="margin-top:1rem">Rolling summary <span class="muted small">(deterministic, English)</span></h3>
+        <pre class="small ink2" style="white-space:pre-wrap;margin:0">{{ f.summary_en or '—' }}</pre>
+        {% if detail.escalations %}<h3 style="margin-top:1rem">Escalations</h3>
+          {% for e in detail.escalations %}<div class="small" style="margin-bottom:.4rem"><span class="chip urg-{{ e.urgency }}"><span class="dot"></span>{{ e.category|replace('_',' ') }} · {{ e.status }}</span> {{ e.summary_en }}</div>{% endfor %}{% endif %}
+        <h3 style="margin-top:1rem">Staff reply</h3>
+        <p class="small muted">Sent as you (a human), through the same allowlist and consent checks.</p>
+        <textarea id="staff-text" rows="3" style="width:100%" placeholder="Type a reply to {{ p.preferred_name }}…"></textarea>
+        <button class="primary" style="margin-top:.4rem" onclick="const t=document.getElementById('staff-text').value; if(t.trim()) RC.post('/api/conversations/{{ p.id }}/reply', {text:t}, {btn:this})">Send as staff</button>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

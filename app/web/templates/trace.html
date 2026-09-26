@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Trace{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h1>Decision trace</h1>
+  <p class="muted">Every step the agents took: who routed where, what the guard decided, which tools ran, which model was called and what it cost.</p></div>
+  <span class="spacer"></span>
+  {% if pid %}<a class="btn" href="/trace">Show all patients</a>{% endif %}
+</div>
+<div class="threads">
+  <nav class="card flush runlist" aria-label="Runs">
+    {% for r in runs %}
+    <a href="/trace?run={{ r.run_id }}{{ '&pid=' ~ pid if pid else '' }}" class="{{ 'on' if r.run_id == sel }}">
+      <div style="display:flex;gap:.4rem;align-items:center"><strong>{{ r.event_type|replace('_',' ') }}</strong>
+        <span class="spacer"></span><span class="muted small num">{{ r.started_at[5:10] }} {{ r.started_at[11:16] }}</span></div>
+      <div class="muted small">{{ r.full_name or 'clinic-wide' }} · {{ r.outcome or '…' }}{% if r.tokens_in %} · {{ r.tokens_in + r.tokens_out }} tok{% endif %}</div>
+    </a>
+    {% else %}<p class="empty" style="padding:1rem">No runs yet.</p>{% endfor %}
+  </nav>
+  <section class="card" aria-label="Timeline">
+    {% if run %}
+    <div class="card-h">
+      <h2>{{ run.event_type|replace('_',' ')|title }}{% if run.full_name %} · {{ run.full_name }}{% endif %}</h2>
+      <span class="chip">{{ run.step_count }} supervisor steps</span>
+      <span class="chip">🧠 {{ run.tokens_in + run.tokens_out }} tokens</span>
+      <span class="chip">outcome: {{ run.outcome }}</span>
+      <span class="spacer"></span>
+      {% if run.patient_id %}<a class="btn" href="/conversations?pid={{ run.patient_id }}">Conversation</a>{% endif %}
+      <span class="muted small mono">{{ run.run_id }}</span>
+    </div>
+    {% if inbound %}<div class="note" style="margin-bottom:.75rem"><strong>Patient wrote:</strong> {{ inbound.body }}{% if inbound.gloss_en and inbound.gloss_en != inbound.body %}<br><span class="muted">EN: {{ inbound.gloss_en }}</span>{% endif %}</div>{% endif %}
+    <div class="legend small" style="margin-bottom:.5rem">
+      <span class="chip"><span class="dot ag-supervisor"></span>supervisor</span><span class="chip"><span class="dot ag-triage"></span>triage</span>
+      <span class="chip"><span class="dot ag-guard"></span>guard</span><span class="chip"><span class="dot ag-conversation"></span>conversation</span>
+      <span class="chip"><span class="dot ag-scheduling"></span>scheduling</span><span class="chip"><span class="dot ag-other"></span>staff / validator</span>
+    </div>
+    {% include "_timeline.html" %}
+    {% else %}<p class="empty">Pick a run.</p>{% endif %}
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Impact{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h1>Impact</h1>
+  <p class="muted">Equity outcomes first: are the patients who usually fall through the cracks being reached and booked?</p></div></div>
+
+<div class="note" style="margin-bottom:1rem">Computed live from this server's <strong>synthetic</strong> data. After “Run demo scenario”, yesterday's replies are scripted simulator messages processed by the real agents (deterministic paths, no model calls); today's are whatever you do in the demo. These are demo numbers, not clinical results.</div>
+
+<div class="kpis">
+  <div class="kpi"><div class="label">Overdue patients reached</div><div class="value">{{ headline.reached }}</div><div class="sub">reminder delivered on WhatsApp</div></div>
+  <div class="kpi"><div class="label">Rebooking rate</div><div class="value">{{ headline.rebook_rate if headline.rebook_rate is not none else '—' }}{{ '%' if headline.rebook_rate is not none }}</div><div class="sub">{{ headline.booked }} booked of {{ headline.reached }} reached</div></div>
+  <div class="kpi"><div class="label">Symptoms caught → staff</div><div class="value">{{ esc.get('clinical', 0) }}</div><div class="sub">clinical messages that would otherwise have waited</div></div>
+  <div class="kpi"><div class="label">Staff time saved</div><div class="value">{{ minutes.total }} min</div><div class="sub">estimate · assumptions below</div></div>
+  <div class="kpi"><div class="label">Opted out (honoured)</div><div class="value">{{ headline.opted_out }}</div><div class="sub">never contacted again</div></div>
+</div>
+
+<div class="grid cols-2">
+  <section class="card" aria-labelledby="eq-h">
+    <div class="card-h"><h2 id="eq-h">Reach and rebooking by group</h2></div>
+    <p class="small muted">Rebooking rate = booked ÷ reached. The grey bar is the overall rate for comparison.</p>
+    <div class="scroll-x"><table>
+      <thead><tr><th>Group</th><th class="num">Identified</th><th class="num">Reached</th><th class="num">Replied</th><th class="num">Booked</th><th>Rebooking rate</th></tr></thead>
+      <tbody>
+      {% set overall = equity[0].rebook_rate or 0 %}
+      {% for g in equity %}
+      <tr>
+        <td>{% if g.key == 'all' %}<strong>{{ g.label }}</strong>{% else %}{{ g.label }}{% endif %}</td>
+        <td class="num">{{ g.identified }}</td><td class="num">{{ g.reached }}</td><td class="num">{{ g.replied }}</td><td class="num">{{ g.booked }}</td>
+        <td><div class="barcell" title="{{ g.label }}: {{ g.booked }} booked of {{ g.reached }} reached">
+          <div class="bar {{ 'ref' if g.key == 'all' }}" style="flex:1"><span style="width:{{ g.rebook_rate or 0 }}%"></span></div>
+          <span class="v num">{{ (g.rebook_rate ~ '%') if g.rebook_rate is not none else '—' }}</span></div></td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="card" aria-labelledby="esc-h">
+    <h2 id="esc-h">Escalations by category</h2>
+    {% if esc %}<table><tbody>{% for k, v in esc|dictsort %}<tr><td>{{ k|replace('_',' ')|title }}</td><td class="num">{{ v }}</td></tr>{% endfor %}</tbody></table>
+    {% else %}<p class="empty">None yet.</p>{% endif %}
+    <p class="small muted" style="margin-top:.75rem">Clinical = symptoms, medication or post-treatment questions. Security = injection, impersonation or requests to message someone else.</p>
+  </section>
+</div>
+
+<div class="grid cols-2" style="margin-top:1rem">
+  <section class="card" aria-labelledby="min-h">
+    <h2 id="min-h">Staff minutes saved — how it's calculated</h2>
+    <table><thead><tr><th>Work the agents did</th><th class="num">Count</th><th class="num">Min each (Assumption)</th><th class="num">Minutes</th></tr></thead><tbody>
+      {% for p in minutes.parts %}<tr><td>{{ p.label }}</td><td class="num">{{ p.count }}</td><td class="num">{{ p.minutes_each }}</td><td class="num">{{ p.minutes }}</td></tr>{% endfor %}
+      <tr><td><strong>Total</strong></td><td></td><td></td><td class="num"><strong>{{ minutes.total }}</strong></td></tr>
+    </tbody></table>
+    <p class="small muted">Assumptions live in <code>config/clinics/dental.yaml → impact_assumptions</code> and are stated, not measured.</p>
+  </section>
+  <section class="card" aria-labelledby="tok-h">
+    <h2 id="tok-h">Token spend</h2>
+    <div class="kpis" style="margin-bottom:.5rem">
+      <div class="kpi"><div class="label">LLM calls</div><div class="value">{{ spend.calls }}</div></div>
+      <div class="kpi"><div class="label">Tokens in / out</div><div class="value" style="font-size:1.4rem">{{ '{:,}'.format(spend.tokens_in) }} / {{ '{:,}'.format(spend.tokens_out) }}</div></div>
+      <div class="kpi"><div class="label">Per conversation</div><div class="value">{{ spend.tokens_per_conversation or '—' }}</div><div class="sub">tokens</div></div>
+    </div>
+    <table><thead><tr><th>Model</th><th class="num">Calls</th><th class="num">In</th><th class="num">Out</th><th class="num">≈ US$</th></tr></thead><tbody>
+      {% for m in spend.by_model %}<tr><td class="small">{{ m.model }}{% if m.est %} (estimated){% endif %}</td><td class="num">{{ m.calls }}</td><td class="num">{{ m.tin }}</td><td class="num">{{ m.tout }}</td><td class="num">{{ m.cost }}</td></tr>
+      {% else %}<tr><td colspan="5" class="empty">No model calls yet — deterministic paths handled everything.</td></tr>{% endfor %}
+    </tbody></table>
+    <p class="small muted">Cost uses stated list prices per 1M tokens (Assumption): Claude Sonnet 4.5 $3 in / $15 out; Claude Haiku 4.5 $1 / $5.</p>
+  </section>
+</div>
+{% endblock %}

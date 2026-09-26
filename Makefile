@@ -17,8 +17,8 @@ seed:               ## (re)generate synthetic data into data/recallcare.db
 run:                ## start the app on http://127.0.0.1:8000
 	$(PY) -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 
-demo: seed          ## zero-credential demo: mock LLM + phone simulator
-	LLM_PROVIDER=mock CHANNEL=simulator $(PY) -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+demo: seed          ## zero-credential demo: mock LLM + phone simulator (login staff / demo)
+	LLM_PROVIDER=mock CHANNEL=simulator DASHBOARD_PASSWORD=$${DASHBOARD_PASSWORD:-demo} $(PY) -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 
 eval:               ## eval suite, mock LLM (free, deterministic)
 	$(PY) -m evals.run --mode mock

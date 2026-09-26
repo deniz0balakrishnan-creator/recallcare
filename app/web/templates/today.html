@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Today{% endblock %}
+{% block bodyattrs %}data-autorefresh="1"{% endblock %}
+{% block content %}
+<div class="pagehead">
+  <div>
+    <h1>Today's follow-up</h1>
+    <p class="muted">{{ now.strftime('%A %d %B %Y') }} · the agents found who is overdue; you decide who they contact.</p>
+  </div>
+  <span class="spacer"></span>
+  <div class="legend small" aria-label="Autonomy tiers">
+    <span class="chip tier1"><span class="dot"></span>Tier 1 · autonomous</span>
+    <span class="chip tier2"><span class="dot"></span>Tier 2 · staff approves</span>
+    <span class="chip tier3"><span class="dot"></span>Tier 3 · always a human</span>
+  </div>
+</div>
+
+{% if escalations %}
+<section class="card" style="margin-bottom:1rem" aria-labelledby="esc-h">
+  <div class="card-h"><div class="alert-head" id="esc-h">▲ Needs a human now · {{ escalations|length }} open</div>
+    <span class="chip tier3"><span class="dot"></span>Tier 3</span>
+    <span class="muted small">The patient already got a holding reply. Nothing clinical is ever answered by an agent.</span></div>
+  {% for e in escalations %}
+  <div class="esc {{ e.urgency }}">
+    <div class="row">
+      <span class="chip urg-{{ e.urgency }}"><span class="dot"></span>{{ e.urgency|title }}</span>
+      <strong>{{ e.category|replace('_',' ')|title }}</strong>
+      <span>· <a href="/conversations?pid={{ e.patient_id }}">{{ e.full_name }}</a></span>
+      <span class="lang">{{ e.preferred_language|upper }}</span>
+      <span class="muted small">{{ e.created_at[11:16] }} · <a href="/trace?run={{ e.run_id }}">trace</a></span>
+    </div>
+    <div class="summary">{{ e.summary_en }}</div>
+    <div class="row">
+      <button onclick="RC.post('/api/escalations/{{ e.id }}/resolve', {resolution: prompt('How was this handled?', 'Called the patient') || 'handled'}, {btn:this})">Mark handled</button>
+      <a class="btn" href="/conversations?pid={{ e.patient_id }}">Open conversation</a>
+    </div>
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+<div class="kpis" aria-label="Headline outcomes">
+  <div class="kpi"><div class="label">Overdue patients reached</div><div class="value">{{ headline.reached }}</div><div class="sub">WhatsApp reminder delivered</div></div>
+  <div class="kpi"><div class="label">Booked back in</div><div class="value">{{ headline.booked }}</div><div class="sub">{{ headline.rebook_rate if headline.rebook_rate is not none else '—' }}% of patients reached</div></div>
+  <div class="kpi"><div class="label">Symptoms caught → staff</div><div class="value">{{ headline.clinical_escalations }}</div><div class="sub">{{ headline.escalations }} escalations in total</div></div>
+  <div class="kpi"><div class="label">Staff time saved</div><div class="value">{{ headline.minutes_saved }} min</div><div class="sub">estimate · <a href="/impact">assumptions</a></div></div>
+</div>
+
+<div class="grid cols-2">
+  <section class="card" aria-labelledby="batch-h">
+    <div class="card-h">
+      <h2 id="batch-h">Proposed outreach batch</h2>
+      <span class="chip tier2"><span class="dot"></span>Tier 2 · you approve</span>
+      <span class="spacer"></span>
+      {% if batch %}<button class="primary" onclick="RC.post('/api/batch/approve', {}, {btn:this})">Approve all {{ batch|length }}</button>{% endif %}
+      <button onclick="RC.post('/api/triage/run', {}, {btn:this})" title="Triage agent re-scans records now">Re-run triage</button>
+    </div>
+    {% if batch %}
+    <p class="muted small">Ranked by a transparent rule-based score (months overdue, visit type, age 65+, CHAS). The triage agent only writes the reasons.</p>
+    <div class="scroll-x"><table>
+      <thead><tr><th>Patient</th><th>Why today</th><th>Urgency</th><th class="num">Score</th><th></th></tr></thead>
+      <tbody>
+      {% for b in batch %}
+      <tr>
+        <td><a href="/conversations?pid={{ b.patient_id }}"><strong>{{ b.full_name }}</strong></a><br>
+          <span class="lang">{{ b.preferred_language|upper }}</span> <span class="muted small">age {{ b.age }}{% if b.chas_tier != 'none' %} · CHAS {{ b.chas_tier|title }}{% endif %}</span>
+          {% if b.sensitive %}<br><span class="chip tier2" title="Every message to this patient waits for staff approval"><span class="dot"></span>Sensitive · Tier 2</span>{% endif %}</td>
+        <td class="small">{{ b.reason }}</td>
+        <td><span class="chip urg-{{ b.urgency }}"><span class="dot"></span>{{ b.urgency|title }}</span></td>
+        <td class="num">{{ '%.0f'|format(b.score or 0) }}</td>
+        <td style="white-space:nowrap">
+          <button class="ghost" title="Approve just this patient" onclick="RC.post('/api/batch/approve', {patient_ids:[{{ b.patient_id }}]}, {btn:this})">✓</button>
+          <button class="ghost" title="Edit the reason" onclick="const r=prompt('Reason shown to staff', {{ b.reason|tojson }}); if(r) RC.post('/api/batch/{{ b.patient_id }}/edit', {reason:r}, {btn:this})">✎</button>
+          <button class="ghost danger" title="Remove from today's batch" onclick="RC.post('/api/batch/{{ b.patient_id }}/remove', {}, {btn:this})">✕</button>
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}
+    <p class="empty">No batch waiting. Approved patients are being contacted; re-run triage to find more.</p>
+    {% endif %}
+  </section>
+
+  <div class="grid" style="align-content:start">
+    <section class="card" aria-labelledby="held-h">
+      <div class="card-h"><h2 id="held-h">Held for your approval</h2><span class="chip tier2"><span class="dot"></span>Tier 2</span></div>
+      {% if pending %}
+        {% for m in pending %}
+        <div style="margin-bottom:.8rem">
+          <div class="small"><a href="/conversations?pid={{ m.patient_id }}"><strong>{{ m.full_name }}</strong></a> <span class="lang">{{ m.preferred_language|upper }}</span> · agent draft</div>
+          <div class="msg out" style="max-width:100%;margin:.3rem 0"><span class="body">{{ m.body }}</span>{% if m.gloss_en and m.gloss_en != m.body %}<div class="gloss" style="display:block">EN: {{ m.gloss_en }}</div>{% endif %}</div>
+          <button class="primary" onclick="RC.post('/api/pending/{{ m.id }}/approve', {}, {btn:this})">Approve & send</button>
+          <button onclick="RC.post('/api/pending/{{ m.id }}/reject', {}, {btn:this})">Reject</button>
+        </div>
+        {% endfor %}
+      {% else %}<p class="empty">Nothing waiting. Messages to patients flagged "sensitive" appear here before they are sent.</p>{% endif %}
+    </section>
+
+    <section class="card" aria-labelledby="man-h">
+      <div class="card-h"><h2 id="man-h">Call manually</h2><span class="muted small">overdue, no WhatsApp consent — never messaged</span></div>
+      {% if manual %}<table><tbody>
+        {% for d in manual %}<tr><td>{{ d.name }} <span class="lang">{{ d.preferred_language|upper }}</span></td><td class="small muted">{{ d.facts[0] }}</td></tr>{% endfor %}
+      </tbody></table>{% else %}<p class="empty">None.</p>{% endif %}
+    </section>
+
+    <section class="card" aria-labelledby="act-h">
+      <div class="card-h"><h2 id="act-h">Recent activity</h2><span class="spacer"></span><a class="small" href="/conversations">All conversations →</a></div>
+      {% for r in recent %}
+      <div style="display:flex;gap:.5rem;align-items:center;padding:.25rem 0">
+        <span class="chip st-{{ r.status }}"><span class="dot"></span>{{ r.status|replace('_',' ') }}</span>
+        <a href="/conversations?pid={{ r.patient_id }}">{{ r.full_name }}</a><span class="lang">{{ r.preferred_language|upper }}</span>
+        <span class="spacer"></span><span class="muted small">{{ r.updated_at[5:10] }} {{ r.updated_at[11:16] }}</span>
+      </div>
+      {% else %}<p class="empty">No activity yet.</p>{% endfor %}
+    </section>
+  </div>
+</div>
+{% endblock %}

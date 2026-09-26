@@ -31,7 +31,7 @@ def test_equity_and_treatment_bonuses():
 
 def test_due_soon_ranks_below_overdue():
     soon, urg = recall.score_patient(months_overdue=-0.3, visit_type="perio_maintenance", age=80, chas_tier="blue")
-    assert urg == "routine" and soon < 12
+    assert urg == "routine" and soon < 20
 
 
 def test_triage_batch_from_seed(seeded):

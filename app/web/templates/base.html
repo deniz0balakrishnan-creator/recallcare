@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}RecallCare{% endblock %} · {{ clinic.name }}</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%232a78d6'/><text x='16' y='22' font-size='17' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='700'>R</text></svg>">
+<link rel="stylesheet" href="/static/app.css?v={{ version }}">
+<script src="/static/app.js?v={{ version }}" defer></script>
+</head>
+<body {% block bodyattrs %}{% endblock %}>
+<header class="topbar">
+  <a class="brand" href="/"><span class="logo">R</span>RecallCare <small>{{ clinic.name }} · fictional clinic</small></a>
+  <nav class="nav" aria-label="Main">
+    <a href="/" class="{{ 'on' if page=='today' }}">Today{% if open_escalations %}<span class="count" title="Open escalations">{{ open_escalations }}</span>{% endif %}</a>
+    <a href="/conversations" class="{{ 'on' if page=='conversations' }}">Conversations</a>
+    <a href="/trace" class="{{ 'on' if page=='trace' }}">Trace</a>
+    <a href="/impact" class="{{ 'on' if page=='impact' }}">Impact</a>
+    <a href="/evals" class="{{ 'on' if page=='evals' }}">Evals</a>
+  </nav>
+  <span class="spacer"></span>
+  <div class="tools">
+    <span class="chip" title="Language model provider for this server">🧠 {{ llm }}</span>
+    <div class="seg" role="group" aria-label="Messaging channel">
+      <button class="{{ 'on' if channel=='simulator' }}" onclick="RC.setChannel('simulator', this)" title="In-app phone simulator (behaves like WhatsApp)">📱 Simulator</button>
+      <button class="{{ 'on live' if channel=='whatsapp' }}" onclick="RC.setChannel('whatsapp', this)" {% if not wa_ready %}title="WhatsApp credentials not configured yet" {% endif %}>🟢 WhatsApp live</button>
+    </div>
+    <button onclick="RC.toggleDrawer()" title="Open the patient phone simulator">Patient phone</button>
+    <button class="primary" onclick="RC.resetDemo(this)">Run demo scenario</button>
+    <form method="post" action="/logout" style="margin:0"><button class="ghost" title="Log out {{ user }}">⎋</button></form>
+  </div>
+</header>
+
+<main class="wrap">
+{% block content %}{% endblock %}
+</main>
+
+<aside id="drawer" class="drawer" aria-label="Patient phone simulator">
+  <header><strong>Patient phone</strong><span class="muted small">acts as the patient · same rules as WhatsApp</span>
+    <span class="spacer"></span><button class="ghost" onclick="RC.toggleDrawer(false)" aria-label="Close">✕</button></header>
+  <iframe title="Patient phone simulator" data-src="/simulator?embed=1"></iframe>
+</aside>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<footer class="foot">
+  {{ clinic.name }} is a <strong>fictional</strong> clinic. Every patient and phone number here is <strong>synthetic</strong>.
+  RecallCare never gives clinical advice — anything clinical goes to a human. · v{{ version }} · {{ now.strftime('%a %d %b %Y, %H:%M') }} SGT
+</footer>
+</body>
+</html>

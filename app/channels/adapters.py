@@ -84,21 +84,26 @@ class WhatsAppChannel:
                            "type": "text", "text": {"preview_url": False, "body": text}})
 
     def parse_inbound(self, payload: dict[str, Any]) -> list[InboundMessage]:
-        out: list[InboundMessage] = []
-        for entry in payload.get("entry", []):
-            for change in entry.get("changes", []):
-                value = change.get("value", {})
-                for m in value.get("messages", []) or []:
-                    if m.get("type") == "text":
-                        text = (m.get("text") or {}).get("body", "")
-                    elif m.get("type") == "button":
-                        text = (m.get("button") or {}).get("text", "")
-                    else:
-                        text = f"[non-text message: {m.get('type')}]"
-                    ts = datetime.fromtimestamp(int(m["timestamp"])) if m.get("timestamp") else None
-                    out.append(InboundMessage(from_phone=normalise_phone(m.get("from", "")), text=text,
-                                              wa_message_id=m.get("id"), ts=ts, channel=self.name))
-        return out
+        return parse_wa_payload(payload)
+
+
+def parse_wa_payload(payload: dict[str, Any]) -> list[InboundMessage]:
+    """Extract inbound patient messages from a Meta webhook payload (status callbacks are ignored)."""
+    out: list[InboundMessage] = []
+    for entry in payload.get("entry", []):
+        for change in entry.get("changes", []):
+            value = change.get("value", {})
+            for m in value.get("messages", []) or []:
+                if m.get("type") == "text":
+                    text = (m.get("text") or {}).get("body", "")
+                elif m.get("type") == "button":
+                    text = (m.get("button") or {}).get("text", "")
+                else:
+                    text = f"[non-text message: {m.get('type')}]"
+                ts = datetime.fromtimestamp(int(m["timestamp"])) if m.get("timestamp") else None
+                out.append(InboundMessage(from_phone=normalise_phone(m.get("from", "")), text=text,
+                                          wa_message_id=m.get("id"), ts=ts, channel="whatsapp"))
+    return out
 
 
 def verify_signature(raw_body: bytes, header_value: str | None) -> bool:

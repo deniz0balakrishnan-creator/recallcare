@@ -1,0 +1,24 @@
+{# Shared decision-trace timeline. Expects `events` (list of trace rows with parsed args/guard_verdict). #}
+{% set AG = {'supervisor':'supervisor','triage':'triage','guard':'guard','conversation':'conversation','scheduling':'scheduling'} %}
+<ol class="tl">
+{% for e in events %}
+  {% set oc = e.outcome %}
+  <li>
+    <span class="t num">{{ (e.ts or '')[11:19] }}</span>
+    <span class="agent"><span class="dot ag-{{ AG.get(e.agent, 'other') }}"></span>{{ e.agent }}</span>
+    <div class="what">
+      <div class="action">{{ e.action }}</div>
+      {% if e.thought_summary %}<div class="why">{{ e.thought_summary }}</div>{% endif %}
+      {% if e.guard_verdict %}{% set v = e.guard_verdict %}
+        <div class="why">Verdict <strong>{{ v.category }}</strong> → <strong>{{ v.action }}</strong> · source {{ v.source }}{% if v.confidence is defined %} · confidence {{ v.confidence }}{% endif %}{% if v.urgency %} · urgency {{ v.urgency }}{% endif %}</div>
+        {% if v.gloss_en %}<div class="why">EN: “{{ v.gloss_en }}”</div>{% endif %}
+      {% endif %}
+      {% if e.model %}<div class="model">🧠 {{ e.model }} · {{ e.tokens_in }} in / {{ e.tokens_out }} out tokens{% if e.tokens_estimated %} (est.){% endif %} · {{ e.latency_ms }} ms</div>{% endif %}
+      {% if e.args %}<details><summary class="small">details</summary><div class="args">{{ e.args|tojson(indent=1) }}</div></details>{% endif %}
+    </div>
+    <span><span class="chip oc-{{ oc }}"><span class="dot"></span>{{ {'ok':'✓ ok','blocked':'⚠ blocked','escalated':'▲ escalated','error':'✕ error','repaired':'↻ repaired','skipped':'– skipped'}.get(oc, oc) }}</span></span>
+  </li>
+{% else %}
+  <li><span></span><span></span><span class="muted">No events.</span><span></span></li>
+{% endfor %}
+</ol>

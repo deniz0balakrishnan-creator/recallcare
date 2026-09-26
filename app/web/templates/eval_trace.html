@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Eval trace{% endblock %}
+{% block content %}
+{% set s = dump.scenario %}
+<div class="pagehead"><div><h1>{{ s.id }}</h1><p class="muted">{{ s.description }} · {{ s.category }} · {{ mode }} mode</p></div>
+  <span class="spacer"></span><a class="btn" href="/evals?mode={{ mode }}">← All scenarios</a></div>
+<div class="grid cols-2">
+  <section class="card"><div class="card-h"><h2>Timeline</h2>
+    <span class="chip {{ 'oc-ok' if not dump.failures else 'oc-error' }}"><span class="dot"></span>{{ 'PASS' if not dump.failures else 'FAIL' }}</span></div>
+    {% set events = dump.trace %}{% include "_timeline.html" %}</section>
+  <div class="grid" style="align-content:start">
+    <section class="card"><h2>Expectations</h2>
+      <pre class="small" style="white-space:pre-wrap">{{ s.expect|tojson(indent=1) }}</pre>
+      {% if dump.failures %}<h3>Failures</h3><ul>{% for f in dump.failures %}<li>{{ f }}</li>{% endfor %}</ul>{% endif %}
+      <h3>Observed</h3><pre class="small" style="white-space:pre-wrap">{{ dump.observations|tojson(indent=1) }}</pre></section>
+    <section class="card"><h2>Messages</h2>
+      <div class="chat glossable show-gloss">{% for m in dump.messages %}
+        <div class="msg {{ 'out' if m.direction=='out' else 'in' }} {{ 'blocked' if m.status=='blocked' }} {{ 'tpl' if m.kind=='template' }}"><span class="body">{{ m.body[:600] }}</span>{% if m.gloss_en and m.gloss_en != m.body %}<div class="gloss">EN: {{ m.gloss_en }}</div>{% endif %}
+          <div class="meta"><span>{{ m.status }}</span>{% if m.agent %}<span>{{ m.agent }}</span>{% endif %}</div></div>{% endfor %}</div></section>
+  </div>
+</div>
+{% endblock %}

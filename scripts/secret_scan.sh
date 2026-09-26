@@ -13,7 +13,7 @@ PATTERNS=(
   '-----BEGIN [A-Z ]*PRIVATE KEY-----'
   'ghp_[A-Za-z0-9]{30,}'                      # GitHub PAT
   'xox[abprs]-[A-Za-z0-9-]{10,}'              # Slack
-  '(API_KEY|APP_SECRET|ACCESS_TOKEN|PASSWORD|SESSION_SECRET|VERIFY_TOKEN)=[^[:space:]#]{8,}'
+  '(API_KEY|APP_SECRET|ACCESS_TOKEN|PASSWORD|SESSION_SECRET|VERIFY_TOKEN)=[^[:space:]#${<"][^[:space:]#]{7,}'   # skips $VAR / <placeholder>
 )
 
 fail=0

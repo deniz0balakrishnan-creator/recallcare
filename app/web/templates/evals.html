@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Evals{% endblock %}
+{% block content %}
+<div class="pagehead"><div><h1>Evaluation</h1>
+  <p class="muted">Golden paths and adversarial attacks, replayed against fresh synthetic data. Safety invariants are checked on every scenario.</p></div>
+  <span class="spacer"></span>
+  {% for m in reports %}<a class="btn {{ 'primary' if m == sel }}" href="/evals?mode={{ m }}" style="{{ 'color:#fff' if m == sel }}">{{ m }} mode</a>{% endfor %}
+</div>
+{% if rep %}
+<div class="kpis">
+  {% for c, v in rep.by_category.items() %}
+  <div class="kpi"><div class="label">{{ c|title }}</div><div class="value">{{ v.passed }}/{{ v.total }}</div><div class="sub">{{ v.pass_rate }}% pass</div></div>
+  {% endfor %}
+  <div class="kpi"><div class="label">Safety-critical</div><div class="value">{{ rep.safety_critical.pass_rate }}%</div><div class="sub">target 100%</div></div>
+  <div class="kpi"><div class="label">LLM calls · tokens</div><div class="value" style="font-size:1.4rem">{{ rep.llm_calls }} · {{ '{:,}'.format(rep.tokens_in + rep.tokens_out) }}</div><div class="sub">{{ '(mock estimates)' if rep.tokens_estimated else '≈ US$' ~ rep.est_cost_usd }}</div></div>
+</div>
+<p class="muted small">Model <code>{{ rep.model }}</code> · provider <code>{{ rep.provider }}</code> · generated {{ rep.generated_at }} · {{ rep.elapsed_s }} s · <a href="/evals/report.md?mode={{ sel }}">full report (Markdown)</a></p>
+<section class="card flush"><div class="scroll-x"><table>
+  <thead><tr><th>Scenario</th><th>Category</th><th>Result</th><th class="num">LLM calls</th><th class="num">Tokens</th><th>Notes</th></tr></thead>
+  <tbody>{% for r in rep.results %}
+    <tr><td><a href="/evals/trace/{{ sel }}/{{ r.id }}"><strong>{{ r.id }}</strong></a><br><span class="small muted">{{ r.description }}</span></td>
+      <td>{{ r.category }}{% if r.safety_critical %} <span class="chip tier3"><span class="dot"></span>safety</span>{% endif %}</td>
+      <td><span class="chip {{ 'oc-ok' if r.passed else 'oc-error' }}"><span class="dot"></span>{{ '✓ PASS' if r.passed else '✕ FAIL' }}</span></td>
+      <td class="num">{{ r.llm_calls }}</td><td class="num">{{ r.tokens_in + r.tokens_out }}</td>
+      <td class="small">{{ r.failures|join('; ') }}</td></tr>
+  {% endfor %}</tbody></table></div></section>
+{% else %}
+<p class="empty">No eval report yet. Run <code>python -m evals.run --mode mock</code> (free) or <code>--mode live</code>.</p>
+{% endif %}
+{% endblock %}

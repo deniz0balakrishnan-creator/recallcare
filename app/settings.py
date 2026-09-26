@@ -69,6 +69,7 @@ class Settings:
     public_base_url: str = field(default_factory=lambda: _env("PUBLIC_BASE_URL"))
     log_level: str = field(default_factory=lambda: _env("LOG_LEVEL", "INFO"))
     inbound_rate_per_min: int = field(default_factory=lambda: _env_int("INBOUND_RATE_PER_MIN", 10))
+    auto_jobs: bool = field(default_factory=lambda: _env_bool("AUTO_JOBS", True))
 
     # Hard caps (not env-tunable on purpose)
     max_steps_per_run: int = 8
