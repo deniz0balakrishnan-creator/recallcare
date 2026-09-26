@@ -65,7 +65,8 @@ class MockLLM:
         text, lang = ctx.get("text", ""), ctx.get("lang", "en")
         cat_map = {"injection": "injection", "impersonation": "impersonation", "other_recipient": "other_recipient",
                    "clinical": "clinical", "complaint": "complaint", "billing": "billing",
-                   "human_request": "human_request", "abuse": "abuse", "opt_out": "opt_out"}
+                   "human_request": "human_request", "abuse": "abuse", "opt_out": "opt_out",
+                   "other_patient_data": "other_patient_data"}
         cat = cat_map.get(ps.primary or "", "safe")
         if cat == "safe" and ps.emoji_only:
             cat = "unclear"

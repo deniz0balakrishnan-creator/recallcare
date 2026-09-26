@@ -144,6 +144,13 @@ def release_pending(message_id: int, *, approve: bool, staff: str) -> dict[str, 
     trace.event(run_id, "staff", "approve_message", patient_id=m["patient_id"], args={"message_id": message_id, "by": staff})
     out = send_text(m["patient_id"], m["body"], ctx_patient_id=m["patient_id"], run_id=run_id, agent=m["agent"] or "conversation",
                     gloss_en=m["gloss_en"], bypass_sensitive=True)
+    if out["status"] == "window_closed":
+        # The 24h window closed while the message waited for approval: WhatsApp rules require a template now.
+        db.execute("UPDATE messages SET status='expired' WHERE id=?", (message_id,))
+        f = memory.get(m["patient_id"]) or {}
+        out = send_template(m["patient_id"], ctx_patient_id=m["patient_id"], visit_type=f.get("visit_type") or "routine_checkup",
+                            run_id=run_id, agent="conversation", reason="window closed while awaiting approval")
+        out["fallback"] = "template"
     trace.end_run(run_id, out["status"])
     return out
 

@@ -1,0 +1,133 @@
+# Golden-path scenarios. Clock is frozen at Sat 26 Sep 2026 10:00 SGT; patients are the fixed demo heroes.
+# setup.contacted: approve + send the recall template first (the normal state before a patient replies).
+- id: G01_en_books_tuesday_morning
+  description: English patient books next Tuesday morning
+  patient: 5
+  setup: {contacted: true}
+  turns:
+    - say: "Hi, can I come in next Tuesday morning?"
+    - say: "1"
+  expect: {booked: true, status: booked, escalated: false, reply_language: en, booking_weekday: 1, booking_part: morning}
+
+- id: G02_zh_elderly_hours_then_books
+  description: Mandarin-speaking elderly patient asks the opening hours, then books
+  patient: 1
+  setup: {contacted: true}
+  turns:
+    - say: "你们几点开门？"
+    - say: "下星期二上午可以吗"
+    - say: "1"
+  expect: {booked: true, status: booked, escalated: false, reply_language: zh, any_reply_contains: ["9:00"]}
+
+- id: G03_ta_reschedules
+  description: Tamil patient with an existing booking moves it to Thursday evening
+  patient: 3
+  setup: {contacted: true, booking: {date: "2026-09-29", part: morning}}
+  turns:
+    - say: "என் சந்திப்பை வியாழன் மாலைக்கு மாற்ற முடியுமா?"
+    - say: "1"
+  expect: {booked: true, rescheduled: true, active_bookings: 1, escalated: false, reply_language: ta, booking_weekday: 3}
+
+- id: G04_ms_declines_politely
+  description: Malay patient declines politely → declined, and no nagging afterwards
+  patient: 2
+  setup: {contacted: true}
+  turns:
+    - say: "Terima kasih, tapi saya tidak perlu buat masa ini."
+    - advance_days: 6
+    - job: renudge
+  expect: {booked: false, status: declined, escalated: false, reply_language: ms, template_count: 1}
+
+- id: G05_non_responder_one_renudge
+  description: Non-responder gets exactly one gentle re-nudge, then is closed as no_response
+  patient: 6
+  setup: {contacted: true}
+  turns:
+    - advance_days: 5
+    - job: renudge
+    - advance_days: 1
+    - job: renudge
+    - advance_days: 5
+    - job: renudge
+  expect: {template_count: 2, status: no_response, free_text_while_window_closed: 0}
+
+- id: G06_en_price_from_info_sheet
+  description: Patient asks the price → answered from the published info-sheet ranges only
+  patient: 5
+  setup: {contacted: true}
+  turns:
+    - say: "How much does a check-up cost?"
+  expect: {booked: false, escalated: false, reply_language: en, any_reply_contains: ["S$30"], prices_published_only: true}
+
+- id: G07_window_expired_uses_template
+  description: Tier-2 reply held for staff; approved after the 24h window closed → template used, never free text
+  patient: 8
+  setup: {contacted: true}
+  turns:
+    - say: "வணக்கம்"
+    - advance_days: 2
+    - job: approve_pending
+  expect: {template_count: 2, free_text_while_window_closed: 0, held_for_approval: 1}
+
+- id: G08_en_yes_then_option
+  description: Patient says yes to the reminder, picks option 2 (fast path, no model calls)
+  patient: 5
+  setup: {contacted: true}
+  turns:
+    - say: "Yes please"
+    - say: "2"
+  expect: {booked: true, status: booked, escalated: false, llm_calls_max: 0}
+
+- id: G09_zh_parking_then_thanks
+  description: Mandarin patient asks about parking, then says thanks
+  patient: 7
+  setup: {contacted: true}
+  turns:
+    - say: "请问附近有停车的地方吗？"
+    - say: "谢谢"
+  expect: {booked: false, escalated: false, reply_language: zh, any_reply_contains: ["220"]}
+
+- id: G10_ms_books_saturday
+  description: Malay patient books a Saturday morning
+  patient: 6
+  setup: {contacted: true}
+  turns:
+    - say: "Boleh saya datang hari Sabtu pagi?"
+    - say: "2"
+  expect: {booked: true, status: booked, escalated: false, reply_language: ms, booking_weekday: 5}
+
+- id: G11_en_cancels_booking
+  description: Patient cancels their own booking
+  patient: 5
+  setup: {contacted: true, booking: {date: "2026-09-30", part: afternoon}}
+  turns:
+    - say: "Please cancel my appointment, something came up."
+  expect: {active_bookings: 0, escalated: false, reply_language: en}
+
+- id: G12_ta_tomorrow_closed_nearest
+  description: Tamil patient asks for tomorrow (a Sunday, closed) → nearest times offered → books
+  patient: 3
+  setup: {contacted: true}
+  turns:
+    - say: "நாளை மாலை வரலாமா?"
+    - say: "1"
+  expect: {booked: true, escalated: false, reply_language: ta}
+
+- id: G13_en_what_to_bring_then_friday
+  description: Patient asks what to bring, then books Friday afternoon
+  patient: 4
+  setup: {contacted: true}
+  turns:
+    - say: "What should I bring to my appointment?"
+    - say: "Friday afternoon would be good"
+    - say: "3"
+  expect: {booked: true, escalated: false, reply_language: en, booking_weekday: 4, no_clinical_advice: true}
+
+- id: G14_en_change_existing
+  description: Patient with a booking replies CHANGE → new options → rebooked, old slot released
+  patient: 5
+  setup: {contacted: true, booking: {date: "2026-09-29", part: afternoon}}
+  turns:
+    - say: "CHANGE"
+    - say: "1"
+  expect: {booked: true, rescheduled: true, active_bookings: 1, escalated: false}

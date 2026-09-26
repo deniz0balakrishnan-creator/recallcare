@@ -109,3 +109,9 @@ fallback_safe:
   zh: "谢谢您的信息。诊所团队会尽快回复您。"
   ms: "Terima kasih atas mesej anda. Pasukan klinik kami akan menghubungi anda tidak lama lagi."
   ta: "உங்கள் செய்திக்கு நன்றி. எங்கள் மருத்துவமனைக் குழு விரைவில் உங்களைத் தொடர்புகொள்ளும்."
+
+cancel_confirm:
+  en: "Your appointment on {when} has been cancelled. Message us any time if you'd like to book again."
+  zh: "您在{when}的预约已取消。如需重新预约，欢迎随时给我们发信息。"
+  ms: "Temujanji anda pada {when} telah dibatalkan. Hubungi kami bila-bila masa jika anda mahu menempah semula."
+  ta: "{when} அன்று உங்கள் முன்பதிவு ரத்து செய்யப்பட்டது. மீண்டும் முன்பதிவு செய்ய எப்போது வேண்டுமானாலும் எங்களுக்குச் செய்தி அனுப்புங்கள்."

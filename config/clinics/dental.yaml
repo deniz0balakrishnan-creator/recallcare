@@ -82,8 +82,8 @@ impact_assumptions:
 # Deterministic pre-screen keyword lists (guard). Lower-cased substring match; Latin words also word-boundary checked.
 prescreen:
   clinical:
-    en: ["pain", "pains", "painful", "ache", "toothache", "hurt", "hurts", "hurting", "sore", "swollen", "swelling", "swell", "bleed", "bleeding", "blood", "broken tooth", "broke my tooth", "chipped", "cracked", "loose tooth", "abscess", "pus", "infection", "infected", "fever", "medication", "medicine", "antibiotic", "antibiotics", "painkiller", "panadol", "ibuprofen", "paracetamol", "numb", "sensitive teeth", "ulcer", "wisdom tooth", "stitches", "jaw", "can't chew", "cannot chew", "dosage", "prescription", "pregnant", "diabetes"]
-    zh: ["痛", "疼", "肿", "流血", "出血", "血", "断了", "裂", "松动", "发炎", "化脓", "脓", "发烧", "药", "抗生素", "止痛", "敏感", "溃疡", "智齿", "缝线", "下巴", "怀孕"]
+    en: ["pain", "pains", "painful", "ache", "toothache", "hurt", "hurts", "hurting", "sore", "swollen", "swelling", "swell", "bleed", "bleeding", "blood", "broken tooth", "broke my tooth", "chipped", "cracked", "loose tooth", "abscess", "pus", "infection", "infected", "fever", "medication", "medicine", "antibiotic", "antibiotics", "painkiller", "panadol", "ibuprofen", "paracetamol", "numb", "sensitive teeth", "ulcer", "wisdom tooth", "stitches", "jaw", "can't chew", "cannot chew", "dosage", "prescription", "pregnant", "diabetes", "after my extraction", "after the extraction", "after extraction"]
+    zh: ["痛", "疼", "肿", "流血", "出血", "血", "断了", "裂", "松动", "发炎", "化脓", "脓", "发烧", "药", "抗生素", "止痛", "敏感", "溃疡", "智齿", "缝线", "下巴", "怀孕", "布洛芬", "扑热息痛", "拔牙后"]
     ms: ["sakit", "bengkak", "berdarah", "darah", "patah", "retak", "goyang", "nanah", "jangkitan", "demam", "ubat", "antibiotik", "ngilu", "ulser", "gigi bongsu", "jahitan", "rahang", "mengandung"]
     ta: ["வலி", "வீக்கம்", "இரத்தம்", "ரத்தம்", "உடைந்த", "உடைந்து", "சீழ்", "காய்ச்சல்", "மருந்து", "தொற்று", "புண்", "கூச்சம்", "ஆடுகிறது"]
   opt_out_exact:   # whole message (trimmed, case-insensitive, punctuation stripped) equals one of these
@@ -112,7 +112,7 @@ prescreen:
     ms: ["bil saya", "caj berlebihan", "bayaran balik", "invois", "tercaj"]
     ta: ["கட்டணம் அதிகம்", "பணம் திரும்ப", "பில்", "விலைப்பட்டியல்"]
   injection:
-    en: ["ignore previous", "ignore all previous", "ignore the previous", "ignore your instructions", "ignore all instructions", "disregard your", "disregard all", "disregard previous", "system prompt", "you are now", "developer mode", "jailbreak", "pretend you", "pretend to be", "act as", "roleplay", "role-play", "new instructions", "override", "admin mode", "list all patients", "all patients", "other patients", "every patient", "patient list", "database", "show me the records", "reveal your", "print your instructions"]
+    en: ["ignore previous", "ignore all previous", "ignore the previous", "ignore your instructions", "ignore all instructions", "disregard your", "disregard all", "disregard previous", "system prompt", "you are now", "developer mode", "jailbreak", "pretend you", "pretend to be", "act as", "roleplay", "role-play", "new instructions", "override", "admin mode", "list all patients", "all patients", "other patients", "every patient", "patient list", "database", "show me the records", "reveal your", "print your instructions", "system rule", "system message", "new system", "admin access"]
     zh: ["忽略", "之前的指令", "以前的指令", "系统提示", "所有病人", "所有患者", "其他病人", "其他患者", "病人名单", "数据库", "扮演", "假装", "你现在是", "开发者模式"]
     ms: ["abaikan arahan", "abaikan semua", "arahan sebelum", "arahan terdahulu", "semua pesakit", "pesakit lain", "senarai pesakit", "pangkalan data", "berpura-pura", "anda sekarang", "mod pembangun"]
     ta: ["புறக்கணி", "முந்தைய அறிவுறுத்தல்", "அனைத்து நோயாளி", "மற்ற நோயாளி", "நோயாளிகள் பட்டியல்", "தரவுத்தளம்", "போல் நடி", "பாசாங்கு"]
@@ -126,6 +126,11 @@ prescreen:
     zh: ["发消息给", "发给这个号码", "转发给"]
     ms: ["hantar mesej kepada", "hantar whatsapp kepada", "hantar ke nombor"]
     ta: ["இந்த எண்ணுக்கு அனுப்பு", "செய்தி அனுப்பு"]
+  other_patient_data:
+    en: ["my neighbour", "my neighbor", "someone else's", "another patient", "other patient's", "his appointment", "her appointment", "their appointment", "his booking", "her booking", "his phone number", "her phone number", "her number", "his number", "her address", "his address", "her records", "his records"]
+    zh: ["邻居", "别人的", "他的预约", "她的预约", "他的电话", "她的电话", "他的地址", "她的地址"]
+    ms: ["jiran saya", "orang lain", "temujanji dia", "nombor telefon dia", "alamat dia", "rekod dia"]
+    ta: ["பக்கத்து வீட்டு", "மற்றவரின்", "அவருடைய முன்பதிவு", "அவளுடைய முன்பதிவு", "அவருடைய தொலைபேசி"]
   abuse:
     en: ["idiot", "stupid", "shut up", "fuck", "f*ck", "bastard", "damn you", "useless bot", "moron"]
     zh: ["傻逼", "笨蛋", "白痴", "滚", "闭嘴", "去死"]

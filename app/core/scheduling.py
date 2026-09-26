@@ -66,18 +66,21 @@ def find_slots(earliest: date, latest: date, part_of_day: str = "any", duration_
         candidates.append(r)
     picked: list[dict[str, Any]] = []
     seen_days: set[str] = set()
+    seen_times: set[str] = set()
     for r in candidates:                     # first pass: one per day
         d = r["start_ts"][:10]
         if d not in seen_days:
             picked.append(r)
             seen_days.add(d)
+            seen_times.add(r["start_ts"])
         if len(picked) >= limit:
             break
-    for r in candidates:                     # second pass: fill up
+    for r in candidates:                     # second pass: fill up with distinct times (not the same time, other dentist)
         if len(picked) >= limit:
             break
-        if r not in picked:
+        if r not in picked and r["start_ts"] not in seen_times:
             picked.append(r)
+            seen_times.add(r["start_ts"])
     picked.sort(key=lambda r: r["start_ts"])
     return [{"slot_id": r["id"], "start_ts": r["start_ts"], "dentist_id": r["dentist_id"],
              "dentist": dentist_name(r["dentist_id"]), "duration_min": duration_min} for r in picked]

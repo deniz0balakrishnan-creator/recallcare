@@ -13,10 +13,10 @@ from app import clock
 from app.core.lang import is_emoji_or_symbols, normalise_text
 from app.settings import clinic_config
 
-SECURITY_CATS = ("injection", "impersonation", "other_recipient")
+SECURITY_CATS = ("injection", "impersonation", "other_recipient", "other_patient_data")
 # Severity order when several categories hit (first wins as the primary category).
-SEVERITY = ("injection", "impersonation", "other_recipient", "clinical", "complaint", "billing", "human_request",
-            "abuse", "opt_out")
+SEVERITY = ("injection", "impersonation", "other_recipient", "other_patient_data", "clinical", "complaint", "billing",
+            "human_request", "abuse", "opt_out")
 
 _LATIN = re.compile(r"^[\x00-\x7f]+$")
 _PHONE = re.compile(r"(?:\+?\d[\d\s-]{6,}\d)")
@@ -69,7 +69,8 @@ def prescreen(text: str, max_chars: int = 1500) -> Prescreen:
         ps.opt_out_exact = True
         ps.hits["opt_out"] = [lc]
         return ps
-    for cat in ("clinical", "human_request", "complaint", "billing", "injection", "impersonation", "other_recipient", "abuse"):
+    for cat in ("clinical", "human_request", "complaint", "billing", "injection", "impersonation", "other_recipient",
+                "other_patient_data", "abuse"):
         found = [t for terms in cfg[cat].values() for t in terms if _term_hit(lc, t)]
         if found:
             ps.hits[cat] = sorted(set(found))[:6]
