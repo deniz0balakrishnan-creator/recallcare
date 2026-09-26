@@ -239,3 +239,12 @@ body.drawer-open .wrap { margin-right: 420px; }
 .kv dt { color: var(--muted); } .kv dd { margin: 0; }
 details summary { cursor: pointer; color: var(--ink-2); font-size: .9rem; }
 .note { background: var(--accent-wash); border-radius: 8px; padding: .6rem .8rem; font-size: .88rem; color: var(--ink-2); }
+
+/* ---------- phones: the wrapped header shouldn't pin half the screen ---------- */
+@media (max-width: 700px) {
+  .topbar { position: static; gap: .5rem .75rem; padding: .5rem .75rem; }
+  .brand small { display: none; }
+  .nav a { padding: .35rem .55rem; }
+  .tools button, .seg button { font-size: .8rem; }
+  .wrap { padding: .9rem; }
+}

@@ -84,6 +84,7 @@ def guard_node(state: dict[str, Any]) -> dict[str, Any]:
     else:
         out = llm_step("guard", run_id=run_id, patient_id=pid,
                        system=prompt("guard", clinic=clinic_config()["clinic"]["name"],
+                                     clinic_kind=clinic_config()["clinic"].get("kind", "clinic"),
                                      hits=", ".join(f"{k}: {v}" for k, v in ps.hits.items()) or "none"),
                        user=f"Patient's preferred language: {LANG_NAMES.get(lang, lang)}\n{wrap_untrusted(text)}",
                        allowed={"verdict": S.GuardVerdict}, context={"text": text, "lang": lang}, max_tokens=300)

@@ -26,8 +26,15 @@ def _i18n() -> dict[str, dict[str, str]]:
 
 
 def info_answer(topic: str, lang: str) -> tuple[str, str]:
-    en = clinic_config()["info_sheet"][topic]
-    return (en if lang == "en" else _i18n().get(topic, {}).get(lang, en)), en
+    cfg = clinic_config()
+    en = cfg["info_sheet"][topic]
+    if lang == "en":
+        return en, en
+    own = (cfg.get("info_sheet_i18n") or {}).get(topic, {}).get(lang)
+    if own:
+        return own, en
+    canned = _i18n().get(topic, {}).get(lang) if cfg["clinic"].get("type") == "dental" else None
+    return (canned or en), en
 
 
 class MockLLM:

@@ -168,6 +168,7 @@ def seed(n_total: int = 72, reset: bool = True) -> dict[str, int]:
     vtypes = cfg["visit_types"]
     dentists = [d["id"] for d in cfg["clinic"]["dentists"]]
     people = HEROES + _generate_crowd(rng, n_total - len(HEROES))
+    type_map = cfg.get("seed_type_map") or {}      # e.g. gp.yaml maps routine_checkup → chronic_review
 
     build_calendar(rng, today)
     free_slots = db.q("SELECT id, dentist_id, start_ts FROM slots WHERE status='free' ORDER BY start_ts")
@@ -183,26 +184,28 @@ def seed(n_total: int = 72, reset: bool = True) -> dict[str, int]:
                  int(p.sensitive), p.sensitive_note, rng.choice(dentists)),
             )
             last = today - timedelta(days=round(p.months_since_last * 30.44))
+            rtype = type_map.get(p.recall_type, p.recall_type)
+            base_type = type_map.get("routine_checkup", "routine_checkup")
             # a few earlier visits for realism
             for k in range(rng.randint(0, 3), 0, -1):
                 c.execute("INSERT INTO visits(patient_id,visit_date,visit_type,dentist_id) VALUES(?,?,?,?)",
                           (i, (last - timedelta(days=180 * k + rng.randint(0, 40))).isoformat(),
-                           "routine_checkup", rng.choice(dentists)))
-            last_type = "routine_checkup" if p.recall_type == "treatment_followup" else p.recall_type
+                           base_type, rng.choice(dentists)))
+            last_type = base_type if vtypes[rtype].get("interval_months") is None else rtype
             c.execute("INSERT INTO visits(patient_id,visit_date,visit_type,dentist_id) VALUES(?,?,?,?)",
                       (i, last.isoformat(), last_type, rng.choice(dentists)))
-            if p.recall_type == "treatment_followup":
+            if vtypes[rtype].get("interval_months") is None:          # due date set by a clinician's plan
                 due, source = today + timedelta(days=p.followup_due_offset_days or -30), "treatment_plan"
             else:
-                due, source = _add_months(last, vtypes[p.recall_type]["interval_months"]), "interval"
+                due, source = _add_months(last, vtypes[rtype]["interval_months"]), "interval"
             c.execute("INSERT INTO recalls(patient_id,visit_type,due_date,source) VALUES(?,?,?,?)",
-                      (i, p.recall_type, due.isoformat(), source))
+                      (i, rtype, due.isoformat(), source))
             if p.has_future_appt and free_slots:
                 s = free_slots.pop(rng.randrange(len(free_slots)))
                 cur = c.execute(
                     "INSERT INTO appointments(patient_id,dentist_id,start_ts,duration_min,visit_type,status,created_by,created_at)"
                     " VALUES(?,?,?,?,?,'booked','seed',?)",
-                    (i, s["dentist_id"], s["start_ts"], 30, p.recall_type, clock.iso(clock.now())))
+                    (i, s["dentist_id"], s["start_ts"], 30, rtype, clock.iso(clock.now())))
                 c.execute("UPDATE slots SET status='booked', appointment_id=? WHERE id=?", (cur.lastrowid, s["id"]))
         c.execute("INSERT OR REPLACE INTO app_settings(key,value) VALUES('seeded_on', ?)", (today.isoformat(),))
     return {"patients": len(people), "slots": len(db.q("SELECT id FROM slots"))}

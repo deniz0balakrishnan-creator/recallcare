@@ -169,6 +169,7 @@ def _converse(state: dict[str, Any]) -> dict[str, Any]:
                "request_scheduling": S.RequestScheduling, "respond": S.Respond, "escalate": S.Escalate}
     tools = tool_block({k: v for k, v in allowed.items() if k not in ("respond", "escalate")})
     system = prompt("conversation", clinic=clinic_config()["clinic"]["name"], visit=ci["visit_label"],
+                    clinic_kind=clinic_config()["clinic"].get("kind", "clinic"),
                     now=clock.now().strftime("%a %d %b %Y %H:%M"), lang_name=LANG_NAMES[lang], tools=tools)
     tool_results: list[dict[str, Any]] = []
     tctx = ToolContext(run_id=run_id, agent="conversation", patient_id=pid)

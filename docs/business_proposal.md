@@ -61,7 +61,7 @@ Every step is traced — which agent, which tool, which model, tokens and latenc
 
 ## 7. Scale path and data protection
 
-**Same agents, new clinic type — by configuration alone.** Every clinic rule lives in one YAML file (recall intervals, opening hours, info sheet, keyword lists, staff-time assumptions). A family GP clinic swaps in chronic-care reviews, vaccinations and screenings — the direction of Singapore's national preventive-care push, Healthier SG, under which residents enrol with a family doctor (enrolment began 5 July 2023) [10].
+**Same agents, new clinic type — by configuration alone (already demonstrated).** Every clinic rule lives in one YAML file (recall intervals, opening hours, info sheet, keyword lists, staff-time assumptions). Our second file runs a fictional family GP clinic — chronic-care reviews, vaccinations and screenings — on the unchanged agents, with tests — the direction of Singapore's national preventive-care push, Healthier SG, under which residents enrol with a family doctor (enrolment began 5 July 2023) [10].
 
 **PDPA-minded by default.** Only non-clinical fields reach the model (name, language, visit type, due date, bookings — never clinical notes); messages require a recorded WhatsApp consent flag; opt-outs are permanent; the dashboard is behind a login; secrets live only in server environment files; retention of conversation logs is configurable. Clinics should still confirm their own obligations with their Data Protection Officer. **This prototype uses synthetic data only.**
 

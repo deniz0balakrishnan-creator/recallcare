@@ -142,7 +142,7 @@ Every supervisor step, guard decision, tool call (allowed or refused), model cal
 
 * **LangGraph** used idiomatically: typed `StateGraph`, supervisor with `add_conditional_edges`, SQLite checkpointer keyed by patient thread, `recursion_limit` plus our own step cap, `draw_mermaid()` for documentation.
 * **FastAPI** for webhook, JSON actions and the server-rendered dashboard (Jinja + ~60 lines of vanilla JS, no CDN, no build step); **Pydantic v2** for every tool, verdict and protocol message; **SQLite** (WAL) for app data, trace and checkpoints; **pytest** (85 tests) and the eval harness.
-* **Configuration over code:** clinic rules in `config/clinics/dental.yaml`; deterministic patient-facing texts in `config/messages.yaml`; WhatsApp templates in `config/whatsapp_templates.yaml`; all secrets in `.env` (documented in `.env.example`).
+* **Configuration over code:** clinic rules in `config/clinics/dental.yaml`; a second, fictional **family GP clinic** in `config/clinics/gp.yaml` runs on the same agents with no code changes (it `inherit`s the dental file's safety lists and replaces the clinic, visit types, hours, info sheet and clinical keywords; covered by `tests/test_gp_config.py`); deterministic patient-facing texts in `config/messages.yaml`; WhatsApp templates in `config/whatsapp_templates.yaml`; all secrets in `.env` (documented in `.env.example`).
 * **Engineering hygiene:** pinned dependencies, pre-commit secret scan.
 * **Within the organisers' rules:** AWS usage limited to exactly one Lightsail instance in the organisers' environment plus Claude Sonnet 4.5 reached only through their API Gateway (no direct Bedrock, no training or fine-tuning; OpenRouter only as an optional fallback); token use checked against the organisers' daily tracking; a custom agent built with our own framework choice, as the hackathon rules allow; developed locally with an AI coding assistant (Claude Code).
 
@@ -171,4 +171,4 @@ Deterministic code handles scoring, slot search, pre-screening, short replies an
 * **WhatsApp**: until Meta approves the custom `recall_reminder` template, the real channel opens with Meta's `hello_world` stand-in; the free test number can message at most five verified recipients.
 * **Single instance, SQLite, one graph run at a time**: right for one clinic, not for a chain; the next step is Postgres and a queue.
 * **Not yet integrated** with a real practice-management system (read recall dates, write appointments) — the adapters are the seams for that.
-* **Future:** GP clinic configuration (chronic-care reviews, vaccinations, screenings — aligned with Healthier SG), voice-note transcription, staff-editable info sheet, per-clinic analytics across months, native-speaker evaluation sets.
+* **Future:** real clinical protocols for the GP configuration (ours is illustrative), voice-note transcription, staff-editable info sheet, per-clinic analytics across months, native-speaker evaluation sets.

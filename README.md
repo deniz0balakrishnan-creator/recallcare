@@ -86,6 +86,8 @@ Copy `.env.example` to `.env` (gitignored). Every variable is documented there; 
 
 All clinic-specific rules (recall intervals, urgency weights, opening hours, info sheet, keyword lists in 4 languages, staff-time assumptions) live in [`config/clinics/dental.yaml`](config/clinics/dental.yaml). Clinical intervals there are **illustrative and configurable by the clinic**, not medical guidance.
 
+**A second clinic type, configuration only:** [`config/clinics/gp.yaml`](config/clinics/gp.yaml) turns the same agents into a fictional family GP clinic (chronic-condition reviews, screenings, vaccinations). It inherits every safety list from the dental file and swaps only the clinic details, visit types, hours, info sheet and the clinical keyword list, which targets symptoms rather than condition names ("book my diabetes review" is routine; "chest pain" escalates). Try it with `CLINIC_CONFIG=config/clinics/gp.yaml make demo`; `tests/test_gp_config.py` covers it.
+
 ## Evals
 
 ```bash

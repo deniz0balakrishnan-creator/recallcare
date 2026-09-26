@@ -49,3 +49,10 @@ visit_type_labels:
   treatment_followup:  {en: "treatment follow-up", zh: "治疗复诊", ms: "rawatan susulan", ta: "சிகிச்சை பின்தொடர்வு"}
   child_checkup:       {en: "child dental check-up", zh: "儿童牙科检查", ms: "pemeriksaan gigi kanak-kanak", ta: "குழந்தை பல் பரிசோதனை"}
   denture_review:      {en: "denture review", zh: "假牙复查", ms: "semakan gigi palsu", ta: "பல்செட் மறுபரிசோதனை"}
+  # family GP clinic (config/clinics/gp.yaml)
+  chronic_review:        {en: "chronic condition review", zh: "慢性病复诊", ms: "semakan penyakit kronik", ta: "நாள்பட்ட நோய் மறுபரிசோதனை"}
+  health_screening:      {en: "health screening", zh: "健康检查", ms: "saringan kesihatan", ta: "உடல்நலப் பரிசோதனை"}
+  medication_review:     {en: "medication review", zh: "药物复查", ms: "semakan ubat", ta: "மருந்து மறுபரிசீலனை"}
+  post_consult_review:   {en: "follow-up consultation", zh: "复诊", ms: "konsultasi susulan", ta: "தொடர் ஆலோசனை"}
+  childhood_vaccination: {en: "childhood vaccination", zh: "儿童疫苗接种", ms: "vaksinasi kanak-kanak", ta: "குழந்தை தடுப்பூசி"}
+  flu_vaccination:       {en: "flu vaccination", zh: "流感疫苗接种", ms: "vaksinasi influenza", ta: "காய்ச்சல் தடுப்பூசி"}

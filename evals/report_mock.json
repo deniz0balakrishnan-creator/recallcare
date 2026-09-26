@@ -2,7 +2,7 @@
  "mode": "mock",
  "provider": "mock",
  "model": "mock-deterministic",
- "generated_at": "2026-09-27T02:56:17",
+ "generated_at": "2026-09-27T03:03:35",
  "elapsed_s": 2.4,
  "overall": {
   "passed": 37,
@@ -27,7 +27,7 @@
   "pass_rate": 100.0
  },
  "llm_calls": 59,
- "tokens_in": 30178,
+ "tokens_in": 30266,
  "tokens_out": 4047,
  "tokens_estimated": true,
  "est_cost_usd": 0.0,
@@ -620,7 +620,7 @@
    "passed": true,
    "failures": [],
    "llm_calls": 3,
-   "tokens_in": 1353,
+   "tokens_in": 1366,
    "tokens_out": 166,
    "error": null,
    "observations": {
@@ -633,7 +633,7 @@
     "active_bookings": 1,
     "llm_calls": 3,
     "conversation_ran": true,
-    "tokens_in": 1353,
+    "tokens_in": 1366,
     "tokens_out": 166
    }
   },
@@ -645,7 +645,7 @@
    "passed": true,
    "failures": [],
    "llm_calls": 6,
-   "tokens_in": 3211,
+   "tokens_in": 3224,
    "tokens_out": 392,
    "error": null,
    "observations": {
@@ -658,7 +658,7 @@
     "active_bookings": 1,
     "llm_calls": 6,
     "conversation_ran": true,
-    "tokens_in": 3211,
+    "tokens_in": 3224,
     "tokens_out": 392
    }
   },
@@ -670,7 +670,7 @@
    "passed": true,
    "failures": [],
    "llm_calls": 3,
-   "tokens_in": 1427,
+   "tokens_in": 1439,
    "tokens_out": 212,
    "error": null,
    "observations": {
@@ -683,7 +683,7 @@
     "active_bookings": 1,
     "llm_calls": 3,
     "conversation_ran": true,
-    "tokens_in": 1427,
+    "tokens_in": 1439,
     "tokens_out": 212
    }
   },
@@ -845,7 +845,7 @@
    "passed": true,
    "failures": [],
    "llm_calls": 3,
-   "tokens_in": 1348,
+   "tokens_in": 1360,
    "tokens_out": 169,
    "error": null,
    "observations": {
@@ -858,7 +858,7 @@
     "active_bookings": 1,
     "llm_calls": 3,
     "conversation_ran": true,
-    "tokens_in": 1348,
+    "tokens_in": 1360,
     "tokens_out": 169
    }
   },
@@ -895,7 +895,7 @@
    "passed": true,
    "failures": [],
    "llm_calls": 3,
-   "tokens_in": 1355,
+   "tokens_in": 1368,
    "tokens_out": 175,
    "error": null,
    "observations": {
@@ -908,7 +908,7 @@
     "active_bookings": 1,
     "llm_calls": 3,
     "conversation_ran": true,
-    "tokens_in": 1355,
+    "tokens_in": 1368,
     "tokens_out": 175
    }
   },
@@ -920,7 +920,7 @@
    "passed": true,
    "failures": [],
    "llm_calls": 6,
-   "tokens_in": 3166,
+   "tokens_in": 3178,
    "tokens_out": 384,
    "error": null,
    "observations": {
@@ -933,7 +933,7 @@
     "active_bookings": 1,
     "llm_calls": 6,
     "conversation_ran": true,
-    "tokens_in": 3166,
+    "tokens_in": 3178,
     "tokens_out": 384
    }
   },
@@ -970,7 +970,7 @@
    "passed": true,
    "failures": [],
    "llm_calls": 3,
-   "tokens_in": 1348,
+   "tokens_in": 1361,
    "tokens_out": 162,
    "error": null,
    "observations": {
@@ -983,7 +983,7 @@
     "active_bookings": 1,
     "llm_calls": 3,
     "conversation_ran": true,
-    "tokens_in": 1348,
+    "tokens_in": 1361,
     "tokens_out": 162
    }
   }

@@ -146,7 +146,15 @@ class BookSlot(_Strict):
     """Book one offered slot for the current patient."""
     slot_id: str = Field(pattern=r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\|D\d+$")
     patient_id: int = Field(ge=1)
-    visit_type: VisitType
+    visit_type: str = Field(description="one of the clinic's configured visit types")
+
+    @field_validator("visit_type")
+    @classmethod
+    def _known_visit_type(cls, v: str) -> str:
+        from app.settings import clinic_config
+        if v not in clinic_config()["visit_types"]:
+            raise ValueError(f"unknown visit type for this clinic: {v}")
+        return v
 
 
 class CancelOwnBooking(_Strict):

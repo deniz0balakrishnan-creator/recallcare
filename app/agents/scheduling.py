@@ -25,6 +25,7 @@ def _plan_find(state: dict[str, Any], pref_text: str, duration: int) -> dict[str
                        system=prompt("scheduling", clinic=clinic_config()["clinic"]["name"], today=today.isoformat(),
                                      weekday=today.strftime("%A"), first_day=(today + timedelta(days=1)).isoformat(),
                                      last_day=(today + timedelta(days=horizon)).isoformat(), duration=duration,
+                                     hours=clinic_config()["info_sheet"]["hours"],
                                      tools=tool_block({"find_slots": S.FindSlots})),
                        user=wrap_untrusted(pref_text), allowed={"find_slots": S.FindSlots},
                        context={"preference_text": pref_text, "duration_min": duration}, max_tokens=200)

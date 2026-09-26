@@ -120,7 +120,23 @@ def _load_yaml(path: str) -> dict[str, Any]:
 
 
 def clinic_config(path: str | None = None) -> dict[str, Any]:
-    return _load_yaml(str(settings.path(path or settings.clinic_config)))
+    return _clinic(str(settings.path(path or settings.clinic_config)))
+
+
+@lru_cache(maxsize=8)
+def _clinic(path: str) -> dict[str, Any]:
+    """A clinic file may `inherit:` another one and override only what differs (e.g. gp.yaml ← dental.yaml).
+    Top-level sections are replaced wholesale; `prescreen` is merged per category, so a new clinic type can
+    swap its clinical keyword list while keeping every safety list (injection, opt-out, …) it inherits."""
+    cfg = _load_yaml(path)
+    parent = cfg.get("inherit")
+    if not parent:
+        return cfg
+    base = _clinic(str(settings.path(parent)))
+    merged = {**base, **{k: v for k, v in cfg.items() if k != "inherit"}}
+    if "prescreen" in cfg:
+        merged["prescreen"] = {**base.get("prescreen", {}), **cfg["prescreen"]}
+    return merged
 
 
 def messages_config() -> dict[str, Any]:

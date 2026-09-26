@@ -5,6 +5,7 @@
 clinic:
   id: sunbird_dental
   type: dental
+  kind: dental clinic
   name: Sunbird Family Dental
   fictional: true
   address: "Blk 218 Sunbird Walk, #01-12, Singapore 000218 (fictional)"

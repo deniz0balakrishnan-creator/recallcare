@@ -35,9 +35,13 @@ class Check:
     reasons: list[str] = field(default_factory=list)
 
 
-@lru_cache(maxsize=1)
 def _published_amounts() -> frozenset[str]:
-    info = " ".join(str(v) for v in clinic_config()["info_sheet"].values())
+    return _published_amounts_for(settings.clinic_config)
+
+
+@lru_cache(maxsize=8)
+def _published_amounts_for(path: str) -> frozenset[str]:
+    info = " ".join(str(v) for v in clinic_config(path)["info_sheet"].values())
     return frozenset(m.group(1) or m.group(2) for m in _MONEY.finditer(info))
 
 
