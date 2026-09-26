@@ -17,14 +17,20 @@ TEMPERATURE = 0.2
 
 
 class GatewayLLM:
-    """POST {LLM_GATEWAY_URL}/api/chat, X-API-Key auth."""
+    """Organisers' Bedrock gateway. Style `ollama` (default): POST {url}/api/chat; style `openai`:
+    POST {url}/v1/chat/completions. Both documented in the starter kit (see the technical document)."""
 
     name = "gateway"
 
     def __init__(self) -> None:
         if not settings.gateway_api_key:
             raise LLMError("LLM_GATEWAY_API_KEY not set", retryable=False)
-        self.url = settings.gateway_url.rstrip("/") + "/api/chat"
+        self.style = settings.gateway_api_style if settings.gateway_api_style in ("ollama", "openai") else "ollama"
+        base = settings.gateway_url.rstrip("/")
+        if self.style == "openai":
+            self.url = base + ("/chat/completions" if base.endswith("/v1") else "/v1/chat/completions")
+        else:
+            self.url = base + "/api/chat"
         self.model = settings.gateway_model
 
     def _once(self, system: str, messages: list[dict[str, str]], max_tokens: int) -> LLMResult:
@@ -34,8 +40,12 @@ class GatewayLLM:
             wire = [{"role": "user", "content": f"<rules>\n{system}\n</rules>\n\n{first['content']}"}] + msgs[1:]
         else:
             wire = [{"role": "system", "content": system}] + msgs
-        body = {"model": self.model, "messages": wire, "stream": False,
-                "options": {"num_predict": max_tokens, "temperature": TEMPERATURE}}
+        if self.style == "openai":
+            body = {"model": self.model, "messages": wire, "stream": False, "max_tokens": max_tokens,
+                    "temperature": TEMPERATURE}
+        else:
+            body = {"model": self.model, "messages": wire, "stream": False,
+                    "options": {"num_predict": max_tokens, "temperature": TEMPERATURE}}
         raw = json.dumps(body, ensure_ascii=False).encode("utf-8")
         t0 = time.monotonic()
         try:
@@ -50,8 +60,13 @@ class GatewayLLM:
             quota = r.status_code == 429 or "quota" in text or "too many requests" in text
             raise LLMError(f"gateway HTTP {r.status_code}: {r.text[:200]}", retryable=not quota, status=r.status_code)
         data = r.json()
-        content = (data.get("message") or {}).get("content") or ""
-        tin, tout = data.get("prompt_eval_count"), data.get("eval_count")
+        if self.style == "openai":
+            content = ((data.get("choices") or [{}])[0].get("message") or {}).get("content") or ""
+            usage = data.get("usage") or {}
+            tin, tout = usage.get("prompt_tokens"), usage.get("completion_tokens")
+        else:
+            content = (data.get("message") or {}).get("content") or ""
+            tin, tout = data.get("prompt_eval_count"), data.get("eval_count")
         est = tin is None or tout is None
         return LLMResult(text=content, tokens_in=tin if tin is not None else estimate_tokens(system + json.dumps(msgs, ensure_ascii=False)),
                          tokens_out=tout if tout is not None else estimate_tokens(content), tokens_estimated=est,

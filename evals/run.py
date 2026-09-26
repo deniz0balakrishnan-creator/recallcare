@@ -318,6 +318,15 @@ def main() -> int:
     factory.set_provider(provider)
 
     scenarios = [s for s in load_scenarios(a.category, a.only) if a.mode in s.get("modes", ["mock", "live"])]
+    if a.mode == "live":
+        from app.llm import budget
+        u = budget.totals()
+        need = 4_000 * len(scenarios)          # generous estimate per scenario
+        left = min(u["budget_daily"] - u["today"], u["budget_total"] - u["total"])
+        print(f"Token ledger before run: today {u['today']:,}/{u['budget_daily']:,}, total {u['total']:,}/{u['budget_total']:,}")
+        if left < need:
+            print(f"Refusing live run: ~{need:,} tokens needed, {left:,} left under the hard budget.")
+            return 3
     out_dir = ROOT / "runs" / a.mode
     t0 = time.monotonic()
     results = []
@@ -327,6 +336,10 @@ def main() -> int:
         print(f"{'PASS' if r['passed'] else 'FAIL'}  {r['id']:<36} llm={r['llm_calls']:<2} {'; '.join(r['failures'])}", flush=True)
     rep = summarise(results, a.mode, provider, model, time.monotonic() - t0)
     print("\n" + summary_line(rep))
+    if a.mode == "live":
+        from app.llm import budget
+        u = budget.totals()
+        print(f"Token ledger after run: today {u['today']:,}/{u['budget_daily']:,}, total {u['total']:,}/{u['budget_total']:,}")
     if not a.no_write and not a.only and not a.category:
         md, js = to_markdown(rep), json.dumps(rep, ensure_ascii=False, indent=1, default=str)
         for name in (f"report_{a.mode}", "report"):

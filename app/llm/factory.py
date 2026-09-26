@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 
 from app.llm.base import LLMError
+from app.llm.budget import BudgetedLLM
 from app.llm.mock import MockLLM
 from app.llm.providers import FallbackLLM, GatewayLLM, OpenRouterLLM
 from app.settings import settings
@@ -23,9 +24,14 @@ def provider_name() -> str:
 
 
 def get_llm():
+    """Mock is free; every real provider is wrapped in the hard token budget + pacing guard."""
     name = provider_name()
     if name == "mock":
         return MockLLM()
+    return BudgetedLLM(_real(name))
+
+
+def _real(name: str):
     if name == "openrouter":
         return OpenRouterLLM()
     if name == "gateway":

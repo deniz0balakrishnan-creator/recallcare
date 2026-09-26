@@ -64,6 +64,14 @@
       {% else %}<tr><td colspan="5" class="empty">No model calls yet — deterministic paths handled everything.</td></tr>{% endfor %}
     </tbody></table>
     <p class="small muted">Cost uses stated list prices per 1M tokens (Assumption): Claude Sonnet 4.5 $3 in / $15 out; Claude Haiku 4.5 $1 / $5.</p>
+    <h3 style="margin-top:.8rem">Hard spend cap</h3>
+    <div class="barcell" title="Real-model tokens today vs the daily budget">
+      <div class="bar" style="flex:1"><span style="width:{{ [100, (100 * usage.today / (usage.budget_daily or 1))]|min }}%"></span></div>
+      <span class="v num" style="width:auto">{{ '{:,}'.format(usage.today) }} / {{ '{:,}'.format(usage.budget_daily) }} today</span></div>
+    <div class="barcell" style="margin-top:.4rem" title="Real-model tokens in total vs the total budget">
+      <div class="bar" style="flex:1"><span style="width:{{ [100, (100 * usage.total / (usage.budget_total or 1))]|min }}%"></span></div>
+      <span class="v num" style="width:auto">{{ '{:,}'.format(usage.total) }} / {{ '{:,}'.format(usage.budget_total) }} total</span></div>
+    <p class="small muted">Counted in a separate ledger (includes eval runs). At the cap the agents stop calling the model: the guard falls back to its rules and anything it can't handle deterministically goes to staff. The organisers pause accounts that exceed the usage plan, so this is enforced in code.</p>
   </section>
 </div>
 {% endblock %}

@@ -18,11 +18,11 @@ from app.tools import schemas as S
 from app.tools.registry import ToolContext, ToolPermissionError, call_tool, text_hash
 
 SEVERITY = ("injection", "impersonation", "other_recipient", "other_patient_data", "clinical", "complaint", "billing",
-            "human_request", "abuse", "opt_out")
+            "human_request", "abuse", "ai_unavailable", "low_confidence", "unusual_length", "opt_out")
 ESC_CATEGORY = {"clinical": "clinical", "complaint": "complaint", "billing": "billing", "human_request": "human_request",
                 "injection": "security", "impersonation": "security", "other_recipient": "security",
                 "other_patient_data": "other_patient_data", "abuse": "abuse", "unusual_length": "security",
-                "low_confidence": "low_confidence"}
+                "low_confidence": "low_confidence", "ai_unavailable": "ai_unavailable"}
 HOLDING = {"clinical": "holding_clinical", "security": "holding_security", "other_patient_data": "holding_security"}
 URGENT_WORDS = ["swollen", "swelling", "swell", "fever", "can't breathe", "trauma", "accident", "knocked out",
                 "heavy bleeding", "肿", "发烧", "bengkak", "demam", "வீக்கம்", "காய்ச்சல்"]
@@ -98,7 +98,8 @@ def guard_node(state: dict[str, Any]) -> dict[str, Any]:
             if not cats and llm_verdict.category == "safe" and llm_verdict.confidence < 0.6:
                 cats = ["low_confidence"]
         elif not cats:
-            cats = ["low_confidence"]         # model unavailable/unparseable and no deterministic hit: fail safe
+            # model unavailable (e.g. token budget reached) or unparseable, and no deterministic hit: fail safe
+            cats = ["ai_unavailable" if (out.error or "").startswith("llm unavailable") else "low_confidence"]
             source = "rules (llm failed)"
     ordered = sorted(cats, key=lambda c: SEVERITY.index(c) if c in SEVERITY else -1)
     primary = ordered[0] if ordered else "safe"

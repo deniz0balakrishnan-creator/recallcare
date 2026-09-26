@@ -40,6 +40,11 @@ class Settings:
     gateway_api_key: str = field(default_factory=lambda: _env("LLM_GATEWAY_API_KEY"))
     gateway_model: str = field(default_factory=lambda: _env("LLM_MODEL", "global.anthropic.claude-sonnet-4-5-20250929-v1:0"))
     gateway_system_in_user: bool = field(default_factory=lambda: _env_bool("LLM_GATEWAY_SYSTEM_IN_USER"))
+    gateway_api_style: str = field(default_factory=lambda: _env("LLM_GATEWAY_API_STYLE", "ollama"))   # ollama | openai
+    llm_token_budget_daily: int = field(default_factory=lambda: _env_int("LLM_TOKEN_BUDGET_DAILY", 500_000))
+    llm_token_budget_total: int = field(default_factory=lambda: _env_int("LLM_TOKEN_BUDGET_TOTAL", 3_000_000))
+    llm_min_interval_ms: int = field(default_factory=lambda: _env_int("LLM_MIN_INTERVAL_MS", 400))
+    llm_usage_db: str = field(default_factory=lambda: _env("LLM_USAGE_DB", "data/llm_usage.db"))
     llm_max_request_bytes: int = field(default_factory=lambda: _env_int("LLM_MAX_REQUEST_BYTES", 7500))
     llm_timeout_s: int = field(default_factory=lambda: _env_int("LLM_TIMEOUT_S", 60))
     llm_max_output_tokens: int = field(default_factory=lambda: _env_int("LLM_MAX_OUTPUT_TOKENS", 600))

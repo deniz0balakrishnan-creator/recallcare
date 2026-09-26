@@ -180,8 +180,12 @@ def _converse(state: dict[str, Any]) -> dict[str, Any]:
                                 "pending_options": state.get("proposed_slots") or [], "has_booking": bool(ci["booking"])},
                        max_tokens=500)
         if not out.ok:
-            return {"visited": visited, "escalation_request": {"category": "unparseable_output", "urgency": "routine",
-                    "summary_en": f"Conversation agent could not produce a valid action ({out.error}). Patient wrote: \"{text[:200]}\""}}
+            unavailable = (out.error or "").startswith("llm unavailable")
+            return {"visited": visited, "escalation_request": {
+                "category": "ai_unavailable" if unavailable else "unparseable_output", "urgency": "routine",
+                "summary_en": (f"AI assistant unavailable ({out.error}); please reply to the patient yourself. " if unavailable else
+                               f"Conversation agent could not produce a valid action ({out.error}). ")
+                              + f"Patient wrote: \"{text[:200]}\""}}
         act, args = out.action, out.args
         if act.action in ("get_clinic_info", "get_own_patient_context"):
             result = call_tool("conversation", act.action, args, tctx, thought_summary=act.thought_summary)

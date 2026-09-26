@@ -138,11 +138,13 @@ def _eval_summary() -> dict[str, Any] | None:
 def ctx(request: Request, page: str, **kw: Any) -> dict[str, Any]:
     open_esc = db.q1("SELECT COUNT(*) n FROM escalations WHERE status='open'")["n"]
     tokens = trace.token_totals()
+    from app.llm import budget
+    usage = budget.totals()
     return {"page": page, "user": staff(request), "clinic": clinic_config()["clinic"],
             "channel": messaging.current_channel(), "llm": factory.provider_name(),
             "wa_ready": bool(settings.wa_access_token and settings.wa_phone_number_id and settings.wa_graph_version),
             "open_escalations": open_esc, "tokens": tokens, "now": clock.now(), "version": __version__,
-            "langs": LANG_NAMES, "eval_summary": _eval_summary(), **kw}
+            "langs": LANG_NAMES, "eval_summary": _eval_summary(), "usage": usage, **kw}
 
 
 def _esc_rows(status: str = "open") -> list[dict[str, Any]]:

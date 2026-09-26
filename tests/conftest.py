@@ -11,6 +11,8 @@ def fresh_env(tmp_path, monkeypatch):
     """Every test: its own SQLite files, mock LLM, simulator channel, frozen Saturday-morning clock."""
     monkeypatch.setattr(settings, "database_path", str(tmp_path / "t.db"))
     monkeypatch.setattr(settings, "checkpoint_db_path", str(tmp_path / "cp.db"))
+    monkeypatch.setattr(settings, "llm_usage_db", str(tmp_path / "usage.db"))
+    monkeypatch.setattr(settings, "llm_min_interval_ms", 0)
     monkeypatch.setattr(settings, "whatsapp_allowlist", "+6590000001")
     monkeypatch.setattr(settings, "demo_phone_map", "")
     monkeypatch.setattr(settings, "llm_provider", "mock")

@@ -9,7 +9,8 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 VisitType = Literal["routine_checkup", "scaling_polishing", "perio_maintenance", "treatment_followup",
                     "child_checkup", "denture_review"]
 EscalationCategory = Literal["clinical", "complaint", "billing", "human_request", "security", "other_patient_data",
-                             "abuse", "low_confidence", "loop_limit", "unparseable_output", "scheduling", "other"]
+                             "abuse", "low_confidence", "loop_limit", "unparseable_output", "scheduling",
+                             "ai_unavailable", "other"]
 Urgency = Literal["routine", "soon", "urgent"]
 InfoTopic = Literal["hours", "address", "parking", "accessibility", "languages", "prices", "subsidies", "payment",
                     "what_to_bring", "reschedule_policy", "children", "booking"]

@@ -20,6 +20,7 @@ def report() -> dict:
     return {
         "llm_provider": s.llm_provider,
         "gateway": {"url": s.gateway_url, "api_key": _set(s.gateway_api_key), "model": s.gateway_model,
+                    "api_style": s.gateway_api_style,
                     "system_in_user": s.gateway_system_in_user, "max_request_bytes": s.llm_max_request_bytes},
         "openrouter": {"api_key": _set(s.openrouter_api_key), "model": s.openrouter_model},
         "channel": s.channel,
@@ -31,7 +32,13 @@ def report() -> dict:
         "dashboard": {"user": s.dashboard_user, "password": _set(s.dashboard_password),
                       "session_secret": _set(s.session_secret)},
         "public_base_url": s.public_base_url or "(not set)",
+        "llm_usage_ledger": _usage(),
     }
+
+
+def _usage() -> dict:
+    from app.llm import budget
+    return budget.totals()
 
 
 def ping(provider: str | None) -> dict:

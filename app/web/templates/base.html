@@ -20,7 +20,7 @@
   </nav>
   <span class="spacer"></span>
   <div class="tools">
-    <span class="chip" title="Language model provider for this server">🧠 {{ llm }}</span>
+    <span class="chip" title="LLM provider · real-model tokens used today / hard daily budget (total: {{ '{:,}'.format(usage.total) }} / {{ '{:,}'.format(usage.budget_total) }})">🧠 {{ llm }}{% if llm != 'mock' %} · {{ '{:,}'.format(usage.today) }}/{{ '{:,}'.format(usage.budget_daily) }} today{% endif %}</span>
     <div class="seg" role="group" aria-label="Messaging channel">
       <button class="{{ 'on' if channel=='simulator' }}" onclick="RC.setChannel('simulator', this)" title="In-app phone simulator (behaves like WhatsApp)">📱 Simulator</button>
       <button class="{{ 'on live' if channel=='whatsapp' }}" onclick="RC.setChannel('whatsapp', this)" {% if not wa_ready %}title="WhatsApp credentials not configured yet" {% endif %}>🟢 WhatsApp live</button>
