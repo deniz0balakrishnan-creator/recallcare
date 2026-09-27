@@ -13,7 +13,7 @@ SSH="ssh -i $KEY -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15"
 echo "==> syncing code to $USER_@$DEPLOY_HOST:~/recallcare"
 rsync -az --delete -e "$SSH" \
   --exclude .git --exclude .venv --exclude data --exclude .secrets --exclude vendor --exclude '__pycache__' \
-  --exclude .env --exclude 'evals/runs' --exclude .claude --exclude .DS_Store \
+  --exclude .env --exclude .claude --exclude .DS_Store \
   ./ "$USER_@$DEPLOY_HOST:~/recallcare/"
 
 echo "==> writing server .env (laptop .env + server overrides; never committed)"
