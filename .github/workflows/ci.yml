@@ -24,5 +24,5 @@ jobs:
         run: bash scripts/secret_scan.sh --all
       - name: Tests
         run: python -m pytest
-      - name: Evals (mock mode, 14 golden + 22 adversarial)
+      - name: Evals (mock mode, 15 golden + 22 adversarial)
         run: python -m evals.run --mode mock --no-write
