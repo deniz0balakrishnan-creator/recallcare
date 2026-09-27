@@ -21,10 +21,13 @@ def _plan_find(state: dict[str, Any], pref_text: str, duration: int) -> dict[str
     today = clock.today()
     horizon = clinic_config()["calendar"]["horizon_days"]
     if pref_text.strip():
+        # The model picks dates from this list instead of doing weekday arithmetic (live runs showed it slipping).
+        calendar = ", ".join((today + timedelta(days=i)).strftime("%a %Y-%m-%d") for i in range(1, horizon + 1))
         out = llm_step("scheduling", run_id=run_id, patient_id=pid,
                        system=prompt("scheduling", clinic=clinic_config()["clinic"]["name"], today=today.isoformat(),
                                      weekday=today.strftime("%A"), first_day=(today + timedelta(days=1)).isoformat(),
                                      last_day=(today + timedelta(days=horizon)).isoformat(), duration=duration,
+                                     calendar=calendar,
                                      hours=clinic_config()["info_sheet"]["hours"],
                                      tools=tool_block({"find_slots": S.FindSlots})),
                        user=wrap_untrusted(pref_text), allowed={"find_slots": S.FindSlots},
