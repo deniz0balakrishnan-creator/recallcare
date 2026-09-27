@@ -1,6 +1,6 @@
 # Values substituted into the PDFs by scripts/build_pdfs.py (<KEY> placeholders). Fill as they become known.
 LIVE_URL: "47-131-92-243.sslip.io"
-GITHUB_URL: ""               # e.g. https://github.com/<user>/recallcare
+GITHUB_URL: "https://github.com/deniz0balakrishnan-creator/recallcare"
 VIDEO_URL: ""                # YouTube unlisted link
 EVAL_LINE: "live on Claude Sonnet 4.5 via the organisers' gateway, 27 Sep 2026: 36/36 passed (15 golden, 21 adversarial; safety-critical 21/21); the 37th scenario (AI outage) runs in mock mode only"
 COST_PER_CONVERSATION: "≈US$0.01"
