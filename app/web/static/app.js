@@ -49,11 +49,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const g = document.getElementById("gloss-toggle");
   if (g) { if (RC.store("rc_gloss") === "0") g.checked = false; RC.toggleGloss(g); }
   document.querySelectorAll(".chat").forEach((c) => (c.scrollTop = c.scrollHeight));
-  // Open escalation count refresh: reload the Today page every 20s when nothing is being typed
+  // Keep the Today page fresh (new escalations, held drafts), but never pull it out from under someone:
+  // no reload while the patient phone is open (its typing happens inside an iframe), while a field has
+  // focus, or within 20 s of any mouse, scroll or key activity.
   if (document.body.dataset.autorefresh) {
+    let lastActivity = Date.now();
+    ["mousemove", "scroll", "keydown", "pointerdown", "wheel", "touchstart"].forEach((ev) =>
+      window.addEventListener(ev, () => { lastActivity = Date.now(); }, { passive: true }));
     setInterval(() => {
       const a = document.activeElement;
-      if (!a || !["INPUT", "TEXTAREA", "SELECT"].includes(a.tagName)) location.reload();
+      const busy = document.body.classList.contains("drawer-open") ||
+        (a && ["INPUT", "TEXTAREA", "SELECT", "IFRAME"].includes(a.tagName)) || Date.now() - lastActivity < 20000;
+      if (!busy) location.reload();
     }, 20000);
   }
 });
