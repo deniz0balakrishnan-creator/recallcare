@@ -127,8 +127,6 @@ It syncs the code, writes the server `.env`, installs Caddy + a venv, installs t
 | `deploy/` | systemd unit, Caddyfile, server setup, deploy script |
 | `docs/` | business proposal and technical document (Markdown sources + PDFs), architecture, generated fragments, deployment evidence |
 
-
-
 ## Licence
 
 MIT — see [`LICENSE`](LICENSE). Built with the help of Claude Code (AI pair-programmer); see commit trailers.

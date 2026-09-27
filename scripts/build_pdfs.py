@@ -105,29 +105,6 @@ def build(key: str) -> Path:
     return pdf
 
 
-def build_writeup() -> Path | None:
-    """Optional single PDF (proposal + technical document). Not part of the final email format."""
-    from pypdf import PdfWriter
-    parts = [OUT / DOCS_TO_BUILD[k][1] for k in ("proposal", "technical")]
-    if not all(p.exists() for p in parts):
-        return None
-    w = PdfWriter()
-    for p in parts:
-        w.append(str(p))
-    w.add_metadata({"/Title": "RecallCare — write-up (business proposal + technical document)",
-                    "/Author": "Team Binary Beasts (K2EZYJRZ)"})
-    out = OUT / "RecallCare_writeup_K2EZYJRZ.pdf"
-    with open(out, "wb") as f:
-        w.write(f)
-    print(f"built {out.relative_to(ROOT)} (proposal + technical document)")
-    return out
-
-
 if __name__ == "__main__":
-    keys = [k for k in sys.argv[1:] if k != "writeup"] or list(DOCS_TO_BUILD)
-    for k in keys:
+    for k in sys.argv[1:] or list(DOCS_TO_BUILD):
         build(k)
-    if "writeup" in sys.argv[1:]:
-        build_writeup()
-    # The two PDFs are the deliverables; the combined
-    # write-up is only built on request:  scripts/build_pdfs.py writeup
