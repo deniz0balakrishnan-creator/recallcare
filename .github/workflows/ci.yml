@@ -4,6 +4,9 @@ name: CI
 on:
   push:
   pull_request:
+permissions:
+  contents: read      # least privilege: CI only reads the code
+
 jobs:
   test:
     runs-on: ubuntu-latest
