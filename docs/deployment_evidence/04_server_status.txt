@@ -1,0 +1,43 @@
+ Static hostname: ip-172-26-11-55
+       Icon name: computer-vm
+         Chassis: vm 🖴
+      Machine ID: ec2a455c906f9ae63ea571e60398e20f
+         Boot ID: 2598513723724d49836cc7a5e06053c6
+  Virtualization: amazon
+Operating System: Ubuntu 24.04.4 LTS
+          Kernel: Linux 7.0.0-1012-aws
+
+2
+               total        used        free      shared  buff/cache   available
+Mem:           3.7Gi       563Mi       2.0Gi       2.7Mi       1.4Gi       3.2Gi
+
+● recallcare.service - RecallCare multi-agent patient follow-up (FastAPI + LangGraph)
+     Loaded: loaded (/etc/systemd/system/recallcare.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-09-27 07:03:35 UTC; 12s ago
+   Main PID: 4800 (python)
+      Tasks: 3 (limit: 3736)
+     Memory: 62.1M (peak: 62.4M)
+        CPU: 1.141s
+     CGroup: /system.slice/recallcare.service
+             └─4800 /home/ubuntu/recallcare/.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --proxy-headers --forwarded-allow-ips 127.0.0.1
+
+Sep 27 07:03:35 ip-172-26-11-55 systemd[1]: Started recallcare.service - RecallCare multi-agent patient follow-up (FastAPI + LangGraph).
+Sep 27 07:03:36 ip-172-26-11-55 python[4800]: INFO:     Started server process [4800]
+Sep 27 07:03:36 ip-172-26-11-55 python[4800]: INFO:     Waiting for application startup.
+Sep 27 07:03:36 ip-172-26-11-55 python[4800]: INFO:     Application startup complete.
+Sep 27 07:03:36 ip-172-26-11-55 python[4800]: INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+Sep 27 07:03:39 ip-172-26-11-55 python[4800]: INFO:     47.131.92.243:0 - "GET /healthz HTTP/1.1" 200 OK
+Sep 27 07:03:47 ip-172-26-11-55 python[4800]: INFO:     220.255.150.236:0 - "GET /healthz HTTP/1.1" 200 OK
+Sep 27 07:03:47 ip-172-26-11-55 python[4800]: INFO:     207.154.197.113:0 - "GET / HTTP/1.1" 303 See Other
+
+● caddy.service - Caddy
+     Loaded: loaded (/usr/lib/systemd/system/caddy.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-09-27 07:02:00 UTC; 1min 47s ago
+       Docs: https://caddyserver.com/docs/
+    Process: 4430 ExecReload=/usr/bin/caddy reload --config /etc/caddy/Caddyfile --force (code=exited, status=0/SUCCESS)
+   Main PID: 3887 (caddy)
+      Tasks: 8 (limit: 3736)
+     Memory: 11.3M (peak: 14.7M)
+        CPU: 175ms
+     CGroup: /system.slice/caddy.service
+             └─3887 /usr/bin/caddy run --environ --config /etc/caddy/Caddyfile

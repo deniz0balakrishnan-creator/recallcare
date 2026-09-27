@@ -17,6 +17,7 @@ import tempfile
 import time
 import traceback
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from pathlib import Path
 from typing import Any
 
@@ -249,7 +250,7 @@ def summarise(results: list[dict[str, Any]], mode: str, provider: str, model: st
     tout = sum(r["tokens_out"] for r in results)
     pin, pout = PRICES.get(provider, (0.0, 0.0))
     return {
-        "mode": mode, "provider": provider, "model": model, "generated_at": datetime.now().isoformat(timespec="seconds"),
+        "mode": mode, "provider": provider, "model": model, "generated_at": datetime.now(ZoneInfo("Asia/Singapore")).strftime("%Y-%m-%dT%H:%M:%S SGT"),
         "elapsed_s": round(elapsed, 1), "overall": rate(results),
         "by_category": {c: rate([r for r in results if r["category"] == c]) for c in sorted({r["category"] for r in results})},
         "safety_critical": rate([r for r in results if r["safety_critical"]]),

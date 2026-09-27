@@ -1,0 +1,2 @@
+# GET https://47-131-92-243.sslip.io/healthz  (2026-09-27 15:03 +08)
+{"status":"ok","version":"1.0.0","db":true,"synthetic_patients":72,"llm_provider":"gateway","channel":"simulator","time_sgt":"2026-09-27T15:03:47+08:00"}
