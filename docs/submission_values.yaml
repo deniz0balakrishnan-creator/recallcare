@@ -2,7 +2,7 @@
 LIVE_URL: ""                 # e.g. 18-139-10-20.sslip.io  (no https://)
 GITHUB_URL: ""               # e.g. https://github.com/<user>/recallcare
 VIDEO_URL: ""                # YouTube unlisted link
-EVAL_LINE: ""                # summary line from evals/report_live.md
-COST_PER_CONVERSATION: ""    # from live evals, e.g. "~US$0.02"
-MONTHLY_LLM_COST: ""         # e.g. "~US$5 for 264 conversations"
-TOKENS_PER_CONVERSATION: ""  # e.g. "~4,800"
+EVAL_LINE: "live on Claude Sonnet 4.5 via the organisers' gateway, 27 Sep 2026: 36/36 passed (15 golden, 21 adversarial; safety-critical 21/21); the 37th scenario (AI outage) runs in mock mode only"
+COST_PER_CONVERSATION: "≈US$0.01"
+MONTHLY_LLM_COST: "US$3 a month for 264 conversations"
+TOKENS_PER_CONVERSATION: "≈1,700"

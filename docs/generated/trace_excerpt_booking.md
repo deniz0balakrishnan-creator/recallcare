@@ -1,4 +1,4 @@
-Real trace of eval scenario `G01_en_books_tuesday_morning` (mock mode) — patient wrote: *"Hi, can I come in next Tuesday morning?"*
+Real trace of eval scenario `G01_en_books_tuesday_morning` (live mode) — patient wrote: *"Hi, can I come in next Tuesday morning?"*
 
 | Agent | Action | Outcome | Model / tokens | Rationale |
 |------|---------|-----|---------|----------------|

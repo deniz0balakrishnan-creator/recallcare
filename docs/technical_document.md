@@ -161,7 +161,7 @@ Staff browser ──HTTPS──────────────────�
 
 # 9. Cost
 
-Deterministic code handles scoring, slot search, pre-screening, short replies and all confirmations, so most turns need one or two small model calls (every request < 7.5 KB, capped outputs). Spending is **capped in code**: `app/llm/budget.py` refuses any call once the daily or total token budget (set from the organisers' usage plan) is reached, and the dashboard shows usage against both caps. Measured in live evals: **<TOKENS_PER_CONVERSATION> tokens per conversation ≈ <COST_PER_CONVERSATION>** at list price (Assumption: Claude Sonnet 4.5 at US$3 / US$15 per million input/output tokens). The daily triage batch is one call. Lightsail medium is a fixed monthly cost inside the USD 100 credit.
+Deterministic code handles scoring, slot search, pre-screening, short replies and all confirmations, so most turns need one or two small model calls (every request < 7.5 KB, capped outputs). Spending is **capped in code**: `app/llm/budget.py` refuses any call once the daily or total token budget (set from the organisers' usage plan) is reached, and the dashboard shows usage against both caps. Measured in live evals: **<TOKENS_PER_CONVERSATION> tokens per conversation, <COST_PER_CONVERSATION>** at list price (Assumption: Claude Sonnet 4.5 at US$3 / US$15 per million input/output tokens). The daily triage batch is one call. Lightsail medium is a fixed monthly cost inside the USD 100 credit.
 
 # 10. Limitations and future work (honest)
 
