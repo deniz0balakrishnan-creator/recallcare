@@ -38,6 +38,26 @@ def test_budgeted_llm_records_and_refuses(monkeypatch):
     assert inner.calls == 2                                                     # refused BEFORE calling the provider
 
 
+def test_ledger_uses_wall_clock_not_frozen_app_clock():
+    """Evals freeze the app clock and the demo can pin AS_OF_DATE; real spend must land on the real day."""
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+
+    from app import clock
+    clock.freeze("2026-01-15T10:00:00+08:00")
+    try:
+        budget.record(LLMResult(text="", tokens_in=7, tokens_out=3, provider="gateway", model="m"), "guard")
+    finally:
+        clock.reset()
+    real_day = datetime.now(ZoneInfo("Asia/Singapore")).date().isoformat()
+    c = budget._db()
+    try:
+        days = [r[0] for r in c.execute("SELECT day FROM usage")]
+    finally:
+        c.close()
+    assert days == [real_day] and budget.totals()["today"] == 10
+
+
 def test_total_budget_also_enforced(monkeypatch):
     monkeypatch.setattr(settings, "llm_token_budget_daily", 10**9)
     monkeypatch.setattr(settings, "llm_token_budget_total", 500)

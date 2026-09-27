@@ -11,10 +11,11 @@ from __future__ import annotations
 import sqlite3
 import threading
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
-from app import clock
 from app.llm.base import LLMError, LLMResult
 from app.settings import settings
 
@@ -27,6 +28,12 @@ class BudgetExceeded(LLMError):
         super().__init__(msg, retryable=False)
 
 
+def _wall_now() -> datetime:
+    """Real Singapore time. The app clock is frozen in evals and can be pinned by AS_OF_DATE for the demo;
+    real spending must still be dated by the wall clock, or the daily cap would never roll over."""
+    return datetime.now(ZoneInfo("Asia/Singapore"))
+
+
 def _db() -> sqlite3.Connection:
     p = settings.path(settings.llm_usage_db)
     Path(p).parent.mkdir(parents=True, exist_ok=True)
@@ -37,7 +44,7 @@ def _db() -> sqlite3.Connection:
 
 
 def totals() -> dict[str, Any]:
-    day = clock.today().isoformat()
+    day = _wall_now().date().isoformat()
     with _lock:
         c = _db()
         try:
@@ -73,7 +80,7 @@ def record(res: LLMResult, agent: str) -> None:
         c = _db()
         try:
             c.execute("INSERT INTO usage(day,ts,provider,model,agent,tokens_in,tokens_out,estimated) VALUES(?,?,?,?,?,?,?,?)",
-                      (clock.today().isoformat(), clock.iso(clock.now()), res.provider, res.model, agent,
+                      (_wall_now().date().isoformat(), _wall_now().isoformat(timespec="seconds"), res.provider, res.model, agent,
                        res.tokens_in, res.tokens_out, int(res.tokens_estimated)))
             c.commit()
         finally:

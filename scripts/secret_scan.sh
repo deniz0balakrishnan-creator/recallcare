@@ -16,6 +16,17 @@ PATTERNS=(
   '(API_KEY|APP_SECRET|ACCESS_TOKEN|PASSWORD|SESSION_SECRET|VERIFY_TOKEN)=[^[:space:]#${<"][^[:space:]#]{7,}'   # skips $VAR / <placeholder>
 )
 
+# The real values in the local .env must never appear in a committed file, whatever their format
+# (the organisers' gateway key is a bare hex string that no pattern above would recognise).
+ENV_SECRETS=()
+if [[ -f .env ]]; then
+  while IFS='=' read -r k v; do
+    [[ "$k" =~ (KEY|SECRET|TOKEN|PASSWORD)$ && "$k" != "DEPLOY_SSH_KEY" ]] || continue
+    v="${v%%#*}"; v="${v//[[:space:]]/}"
+    [[ ${#v} -ge 8 ]] && ENV_SECRETS+=("$v")
+  done < <(grep -E '^[A-Z_]+=' .env || true)
+fi
+
 fail=0
 if [[ "${1:-}" == "--all" ]]; then
   files=$(git ls-files)
@@ -35,6 +46,12 @@ for f in $files; do
     if grep -E -n -e "$p" <<<"$content" >/dev/null 2>&1; then
       echo "BLOCKED: possible secret in $f (pattern: $p)"
       grep -E -n -e "$p" <<<"$content" | head -3 | sed -E 's/(.{12}).*/\1…[redacted]/'
+      fail=1
+    fi
+  done
+  for v in ${ENV_SECRETS[@]+"${ENV_SECRETS[@]}"}; do
+    if grep -qF -e "$v" <<<"$content"; then
+      echo "BLOCKED: $f contains the value of a secret from .env"
       fail=1
     fi
   done
