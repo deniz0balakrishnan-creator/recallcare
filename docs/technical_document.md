@@ -3,7 +3,7 @@ title: "RecallCare — Technical document"
 subtitle: "Multi-agent dental patient follow-up · Team Binary Beasts (K2EZYJRZ) · NUS-ISS Show Me Your Agents 2026"
 ---
 
-> **Live:** `https://<LIVE_URL>` (judge login in our submission email; `/healthz` is public) · **Code:** `<GITHUB_URL>` · **Evals:** <EVAL_LINE>
+> **Live:** `https://<LIVE_URL>` (judge login in our submission email; `/healthz` is public) · **Code:** `<GITHUB_URL>` · **Demo video:** `<VIDEO_URL>` · **Evals:** <EVAL_LINE>
 > Everything in this system is **synthetic**: the clinic ("Sunbird Family Dental"), its 72 patients and their phone numbers are fictional.
 
 This document follows the seven judging criteria. Sections 1–7 map one-to-one to them; §8–10 cover deployment, cost and limitations. File paths refer to the repository.

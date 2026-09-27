@@ -6,6 +6,8 @@
 
 Built by team **Binary Beasts** (team code K2EZYJRZ, Public category) for the NUS-ISS *Show Me Your Agents* hackathon (powered by AWS, supported by the Singapore Business Federation). Official SME problem statement: *Patient Follow-up* for dental clinics.
 
+**▶ Demo video:** https://youtu.be/gWYj8g5Cerw · **Live site:** https://47-131-92-243.sslip.io (judge login in our submission email) · **Documents:** [business proposal](docs/pdf/business_proposal.pdf) · [technical document](docs/pdf/technical_document.pdf)
+
 ---
 
 ## What it does
