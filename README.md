@@ -43,7 +43,7 @@ Full detail: [`docs/architecture.md`](docs/architecture.md) and the technical do
 
 ## Try the live system (judges)
 
-Log in at the live URL with the **judge** account from our submission email → **Run demo scenario** → approve a patient on *Today* → open **Patient phone** and reply as the patient (any of the four languages, or try a prompt injection) → see every step on the **Trace** page. The real WhatsApp channel uses Meta's test number, which only reaches pre-registered phones, so the in-app phone follows exactly the same rules.
+Log in at the live URL with the **judge** account from our submission email → **Run demo scenario** → approve a patient on *Today* → open **Patient phone** and reply as the patient (any of the four languages, or try a prompt injection) → see every step on the **Trace** page. **The live demo runs on the in-app phone simulator**, which enforces exactly the same rules as the real channel (allowlist, template first, 24-hour window). The WhatsApp Cloud API adapter and its signed webhook are implemented and tested against faked HTTP, but no Meta number is connected for this submission.
 
 ## Quick start (zero credentials)
 
