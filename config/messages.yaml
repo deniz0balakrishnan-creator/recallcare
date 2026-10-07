@@ -2,6 +2,16 @@
 # Placeholders: {clinic} {phone} {name} {when} {dentist} {options} {visit} {address}
 # Every entry has an English version, which doubles as the staff-facing gloss.
 
+holding_question:
+  en: "That's a good question for our clinic team. I've passed it on, and someone will reply to you shortly."
+  zh: "这个问题最好由我们的诊所团队来回答。我已经转达给他们，工作人员会尽快回复您。"
+  ms: "Soalan itu lebih baik dijawab oleh pasukan klinik kami. Saya telah menyampaikannya, dan seseorang akan membalas anda tidak lama lagi."
+  ta: "இந்தக் கேள்விக்கு எங்கள் கிளினிக் குழுவால் சரியாகப் பதிலளிக்க முடியும். அதை அவர்களிடம் தெரிவித்துள்ளேன்; விரைவில் ஒருவர் உங்களுக்குப் பதிலளிப்பார்."
+holding_human:
+  en: "Of course. I've asked our clinic team to contact you, and someone will be in touch shortly."
+  zh: "没问题。我已请诊所团队联系您，工作人员会尽快与您联络。"
+  ms: "Baiklah. Saya telah meminta pasukan klinik kami menghubungi anda, dan seseorang akan berhubung dengan anda tidak lama lagi."
+  ta: "நிச்சயமாக. உங்களைத் தொடர்புகொள்ள எங்கள் கிளினிக் குழுவிடம் கேட்டுள்ளேன்; விரைவில் ஒருவர் உங்களைத் தொடர்புகொள்வார்."
 holding_clinical:
   en: "Thank you for telling us. I've passed this to our clinic team; someone will contact you shortly. If this is an emergency, call 995."
   zh: "谢谢您告诉我们。我已将此转交给诊所团队，工作人员会尽快联系您。如遇紧急情况，请拨打995。"

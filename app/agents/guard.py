@@ -23,7 +23,15 @@ ESC_CATEGORY = {"clinical": "clinical", "complaint": "complaint", "billing": "bi
                 "injection": "security", "impersonation": "security", "other_recipient": "security",
                 "other_patient_data": "other_patient_data", "abuse": "abuse", "unusual_length": "security",
                 "low_confidence": "low_confidence", "ai_unavailable": "ai_unavailable"}
-HOLDING = {"clinical": "holding_clinical", "security": "holding_security", "other_patient_data": "holding_security"}
+HOLDING = {"clinical": "holding_clinical", "security": "holding_security", "other_patient_data": "holding_security",
+           "human_request": "holding_human"}
+
+
+def _holding_for(category: str, urgency: str, text: str) -> str:
+    """995 wording only for symptoms or urgent cases; a routine clinical *question* gets the gentler reply."""
+    if category == "clinical" and urgency == "routine" and "clinical" not in rules.prescreen(text, settings.max_inbound_chars).hits:
+        return "holding_question"
+    return HOLDING.get(category, "holding_general")
 URGENT_WORDS = ["swollen", "swelling", "swell", "fever", "can't breathe", "trauma", "accident", "knocked out",
                 "heavy bleeding", "肿", "发烧", "bengkak", "demam", "வீக்கம்", "காய்ச்சல்"]
 _RANK = {"routine": 0, "soon": 1, "urgent": 2}
@@ -60,8 +68,9 @@ def guard_node(state: dict[str, Any]) -> dict[str, Any]:
     req = state.get("escalation_request")
     if req and not state.get("escalation"):
         cat = req.get("category", "other")
-        upd = _escalate(state, category=cat, urgency=req.get("urgency", "routine"),
-                        summary=req.get("summary_en", cat), holding=HOLDING.get(cat, "holding_general"))
+        urg = req.get("urgency", "routine")
+        upd = _escalate(state, category=cat, urgency=urg, summary=req.get("summary_en", cat),
+                        holding=_holding_for(cat, urg, state.get("inbound_text") or ""))
         return {**upd, "visited": visited, "outcome": f"escalated:{cat}"}
 
     # Mode 2: screen an inbound message.
@@ -152,7 +161,7 @@ def guard_node(state: dict[str, Any]) -> dict[str, Any]:
                f"Patient wrote: \"{(gloss or text)[:200]}\"{'. Pre-screen: ' + hits if hits else ''}")
     try:
         esc = _escalate(state, category=esc_cat, urgency=urgency, summary=summary,
-                        holding=None if action == "opt_out+escalate" else HOLDING.get(esc_cat, "holding_general"))
+                        holding=None if action == "opt_out+escalate" else _holding_for(esc_cat, urgency, text))
     except ToolPermissionError:
         esc = {}
     update.update(esc)

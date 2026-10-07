@@ -13,7 +13,8 @@ EscalationCategory = Literal["clinical", "complaint", "billing", "human_request"
                              "ai_unavailable", "other"]
 Urgency = Literal["routine", "soon", "urgent"]
 InfoTopic = Literal["hours", "address", "parking", "accessibility", "languages", "prices", "subsidies", "payment",
-                    "what_to_bring", "reschedule_policy", "children", "booking"]
+                    "what_to_bring", "reschedule_policy", "children", "booking", "about", "why_contacted",
+                    "privacy", "visit_types"]
 PartOfDay = Literal["morning", "afternoon", "evening", "any"]
 
 

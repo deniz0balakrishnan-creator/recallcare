@@ -192,6 +192,8 @@ def run_scenario(s: dict[str, Any], mode: str, out_dir: Path) -> dict[str, Any]:
             check(lang_ok and p["preferred_language"] == v, f"a reply was not in {v}")
         elif k == "any_reply_contains":
             check(any(any(x in m["body"] for x in v) for m in sent), f"no reply contained any of {v}")
+        elif k == "no_reply_contains":
+            check(not any(any(x in m["body"] for x in v) for m in sent), f"a reply contained one of {v}")
         elif k == "template_count":
             check(len(templates) == v, f"templates sent {len(templates)} expected {v}")
         elif k == "free_text_while_window_closed":

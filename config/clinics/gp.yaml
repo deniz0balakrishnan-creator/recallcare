@@ -94,14 +94,18 @@ prescreen:
 
 # Info sheet — the ONLY source for logistics answers. Prices are published ranges (illustrative).
 info_sheet:
+  about: "This is Kingfisher Family Clinic's WhatsApp assistant. It is an automated assistant, not a person. It helps you book, change or cancel your appointment and answers practical questions about the clinic, such as opening hours, location, prices and what to bring. Anything about your health or treatment goes to our clinic staff, and you can ask to speak to a person at any time."
+  why_contacted: "You are a registered patient of Kingfisher Family Clinic, and you agreed to receive appointment reminders on WhatsApp at this number. We only contact you about your own appointments. If you are unsure whether this message is genuine, call the clinic on 6555 0400 (fictional). Reply STOP at any time to stop these reminders."
+  privacy: "Only our clinic staff can read this conversation, on a password-protected system. An automated assistant helps with replies about appointments and clinic information; anything about your health is passed to our staff. We use your details only for your appointments and care, never for marketing. Reply STOP to stop messages at any time, or ask our staff to delete this conversation."
+  visit_types: "Chronic condition review (about 30 minutes): a regular review of a long-term condition with your doctor. Health screening (about 30 minutes): routine screening tests recommended for your age. Medication review (about 30 minutes): a check of the medicines you take. Follow-up consultation (about 30 minutes): a visit your doctor asked you to book. Childhood vaccination (about 30 minutes): vaccinations on the national childhood schedule. Influenza vaccination (about 30 minutes): the yearly flu vaccine. The doctor will explain anything specific to you at the visit."
   hours: "Mon–Fri 8:30am–12:30pm, 2:00pm–5:00pm and 6:30pm–9:00pm; Sat 8:30am–12:30pm; closed Sundays and public holidays."
   address: "Blk 402 Kingfisher Street, #01-08, Singapore 000402 (fictional). Next to the (fictional) Kingfisher bus interchange."
   parking: "Public carpark at Blk 404, opposite the clinic. Coupon/electronic parking applies."
   accessibility: "Ground-floor clinic with step-free access; wheelchair friendly."
   languages: "Our team speaks English, Mandarin, Malay and Tamil."
   prices: "Published price ranges (illustrative, before any subsidy): consultation S$25–S$45; chronic condition review S$30–S$60; health screening S$40–S$120; influenza vaccination S$20–S$45. The doctor confirms the exact cost before any procedure."
-  subsidies: "CHAS, Pioneer Generation and Merdeka Generation cardholders may be eligible for subsidies, and Healthier SG enrollees should ask about the benefits at their enrolled clinic. Please bring your card — our staff will check your eligibility at the visit."
-  payment: "We accept cash, NETS, PayNow and major credit cards."
+  subsidies: "CHAS, Pioneer Generation and Merdeka Generation cardholders may be eligible for subsidies, and Healthier SG enrollees should ask about the benefits at their enrolled clinic. Please bring your card — our staff will check your eligibility at the visit. MediSave may be usable for some chronic-condition care and selected vaccinations and screenings; our staff can confirm what applies to you."
+  payment: "We accept cash, NETS, PayNow and major credit cards. For company insurance, we can give you an itemised receipt to submit to your insurer."
   what_to_bring: "Please bring your NRIC, any CHAS/PG/MG card, your medicines or their list, and any home readings (for example blood pressure) if you have them."
   reschedule_policy: "You can change or cancel your appointment by replying here or calling us at least 24 hours before."
   children: "Children are welcome. Patients under 18 should come with a parent or guardian."

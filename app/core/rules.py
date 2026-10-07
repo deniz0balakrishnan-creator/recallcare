@@ -137,6 +137,13 @@ INFO_TOPICS: dict[str, list[str]] = {
     "accessibility": ["wheelchair", "lift", "stairs", "轮椅", "电梯", "kerusi roda", "lif", "சக்கர நாற்காலி", "லிப்ட்"],
     "what_to_bring": ["bring", "带什么", "带", "bawa", "கொண்டு வர"],
     "children": ["child", "children", "kid", "son", "daughter", "孩子", "小孩", "anak", "குழந்தை"],
+    "about": ["what is this", "what's this", "who are you", "who is this", "are you a bot", "a bot", "a robot", "are you human",
+              "automated", "这是什么", "你是谁", "机器人", "人工智能", "ini apa", "siapa anda", "robot", "இது என்ன", "நீங்கள் யார்", "ரோபோ"],
+    "why_contacted": ["scam", "my number", "how did you get", "genuine", "legit", "spam", "fake", "诈骗", "骗子", "我的号码",
+                      "penipuan", "nombor saya", "tipu", "மோசடி", "என் எண்"],
+    "privacy": ["privacy", "private", "my data", "who can see", "who reads", "secure", "隐私", "资料", "privasi", "data saya",
+                "தனியுரிமை", "தரவு"],
+    "visit_types": ["what is a", "what's a", "gum care review", "denture review", "什么是", "apa itu", "என்றால் என்ன"],
 }
 
 BOOKING_WORDS = ["book", "appointment", "come in", "come", "slot", "available", "schedule", "visit", "free",
