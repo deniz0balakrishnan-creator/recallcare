@@ -35,6 +35,8 @@ def _holding_for(category: str, urgency: str, text: str) -> str:
 URGENT_WORDS = ["swollen", "swelling", "swell", "fever", "can't breathe", "trauma", "accident", "knocked out",
                 "heavy bleeding", "肿", "发烧", "bengkak", "demam", "வீக்கம்", "காய்ச்சல்"]
 _RANK = {"routine": 0, "soon": 1, "urgent": 2}
+# A keyword hit in these categories is an attack: escalate on the rules alone, so the text never reaches any model.
+ATTACK_HITS = {"injection", "impersonation", "other_recipient", "other_patient_data"}
 
 
 def _det_urgency(cats: list[str], text: str) -> str:
@@ -90,6 +92,9 @@ def guard_node(state: dict[str, Any]) -> dict[str, Any]:
         cats = []
     elif (ps.empty or ps.emoji_only) and not ps.hits:
         cats = ["unclear"]
+    elif set(ps.hits) & ATTACK_HITS:
+        cats = list(ps.categories)
+        source = "rules (attack: no model call)"
     else:
         out = llm_step("guard", run_id=run_id, patient_id=pid,
                        system=prompt("guard", clinic=clinic_config()["clinic"]["name"],
@@ -128,7 +133,9 @@ def guard_node(state: dict[str, Any]) -> dict[str, Any]:
                "short_reply": ps.short_reply, "hits": ps.hits}
     trace.event(run_id, "guard", "verdict", patient_id=pid, guard_verdict=verdict,
                 outcome="ok" if action == "allow" else ("blocked" if action == "clarify" else "escalated"),
-                thought_summary=(llm_verdict.summary_en if llm_verdict else f"rules: {primary}"))
+                thought_summary=(llm_verdict.summary_en if llm_verdict else
+                                 f"rules: {primary}" + (" (attack caught by the keyword pre-screen; not sent to any model)"
+                                                        if source.startswith("rules (attack") else "")))
 
     update: dict[str, Any] = {"guard_verdict": verdict, "visited": visited}
     ctx = ToolContext(run_id=run_id, agent="guard", patient_id=pid)

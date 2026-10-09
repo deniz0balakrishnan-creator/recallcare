@@ -38,7 +38,7 @@ graph TD;
 * **LangGraph** `StateGraph` with a typed state, a supervisor node with conditional edges, and a SQLite checkpointer (short-term memory per patient thread). Long-term memory is a per-patient follow-up state machine in SQLite (`due → proposed → approved → contacted → replied → booked | declined | escalated | opted_out | no_response`).
 * **Least privilege**: each agent can call only its own tools; patient-scoped tools are hard-scoped in code (see `app/tools/registry.py`). Only the scheduling agent can write to the calendar, and only slots it offered to *this* patient.
 * **JSON tool protocol**: the organisers' gateway has unreliable native tool calling, so every agent replies with one JSON object that we parse and validate with Pydantic, with one repair prompt and escalation on a second failure (`app/llm/protocol.py`).
-* **Deterministic where it can be**: overdue scoring, slot search, the guard's 4-language pre-screen, opt-out handling and every safety-critical message (holding replies, slot offers, confirmations) are code, not model output. The model does language work only.
+* **Deterministic where it can be**: overdue scoring, slot search, the guard's 4-language pre-screen (a keyword-caught attack is escalated without any model call), opt-out handling and every safety-critical message (holding replies, slot offers, confirmations) are code, not model output. The model does language work only.
 * **One path to a patient** (`app/core/messaging.py`): output validator → consent/opt-out → Tier-2 hold for sensitive patients → 24h-window check → channel adapter (allowlist enforced again).
 
 Full detail: [`docs/architecture.md`](docs/architecture.md) and the technical document in [`docs/`](docs/).
