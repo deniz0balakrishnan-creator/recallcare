@@ -28,7 +28,7 @@
       <a class="btn" href="/trace?pid={{ p.id }}">Trace</a>
     </div>
     <div class="grid cols-2">
-      <div class="chat glossable" id="chat">
+      <div class="chat glossable" id="chat" data-pid="{{ p.id }}" data-last="{{ detail.msgs[-1].id if detail.msgs else 0 }}">
         {% for m in detail.msgs %}
         <div class="msg {{ 'out' if m.direction=='out' else 'in' }} {{ 'blocked' if m.status=='blocked' }} {{ 'pending' if m.status=='pending_approval' }} {{ 'tpl' if m.kind=='template' }}"><span class="body">{{ m.body }}</span>
           {% if m.gloss_en and m.gloss_en != m.body %}<div class="gloss">EN: {{ m.gloss_en }}</div>{% endif %}
@@ -63,4 +63,20 @@
   </section>
   {% endif %}
 </div>
+<script>
+// Live: refresh this conversation when a new message arrives from another device, unless a staff reply is being typed.
+(function () {
+  const chat = document.getElementById("chat"); if (!chat || !chat.dataset.pid) return;
+  const pid = chat.dataset.pid, last = chat.dataset.last;
+  setInterval(async () => {
+    const t = document.getElementById("staff-text");
+    if (t && (t.value.trim() || document.activeElement === t)) return;
+    try {
+      const r = await fetch("/api/conversations/" + encodeURIComponent(pid) + "/latest", { cache: "no-store" });
+      if (!r.ok) return;
+      const j = await r.json(); if (String(j.last_id) !== last) location.reload();
+    } catch (e) {}
+  }, 2500);
+})();
+</script>
 {% endblock %}

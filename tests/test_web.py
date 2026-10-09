@@ -15,6 +15,7 @@ def client(seeded, monkeypatch):
     monkeypatch.setattr(settings, "auto_jobs", False)
     import app.main as m
     monkeypatch.setattr(m, "_dashboard_password", "pw-test")
+    m._login_attempts.clear()                    # every test starts with a fresh login-attempt limit
     with TestClient(m.app) as c:
         yield c
 
@@ -105,3 +106,30 @@ def test_no_judge_account_unless_configured(client, monkeypatch):
     monkeypatch.setattr(settings, "judge_password", "")
     r = client.post("/login", data={"username": "judge", "password": ""}, follow_redirects=False)
     assert "error" in r.headers["location"]
+
+
+def test_live_status_endpoints_require_login(client):
+    assert client.get("/api/trace/latest").status_code == 401
+    assert client.get("/api/conversations/5/latest").status_code == 401
+
+
+def test_trace_follows_activity_from_another_session(client, monkeypatch):
+    """A second signed-in session (e.g. the judge on the patient phone) creates runs; the staff Trace page's live
+    status endpoint reports them, and the page is in follow mode unless a specific run was picked."""
+    import app.main as m
+    monkeypatch.setattr(settings, "judge_password", "judge-pw-test")
+    _login(client)
+    page = client.get("/trace").text
+    assert 'id="live"' in page and 'data-follow="1"' in page
+    before = client.get("/api/trace/latest").json()["run_id"]
+    with TestClient(m.app) as judge:
+        assert judge.post("/login", data={"username": settings.judge_user, "password": "judge-pw-test"},
+                          follow_redirects=False).headers["location"] == "/"
+        judge.post("/api/batch/approve", json={"patient_ids": [5]})
+        assert judge.post("/api/simulator/5/send", json={"text": "What time do you open?"}).status_code == 200
+    latest = client.get("/api/trace/latest").json()          # the staff session still works and sees the new run
+    assert latest["run_id"] != before and latest["done"] and latest["events"] > 0
+    assert 'data-follow="0"' in client.get(f"/trace?run={latest['run_id']}").text
+    assert 'data-follow="1"' in client.get(f"/trace?run={latest['run_id']}&follow=1").text
+    last = client.get("/api/conversations/5/latest").json()["last_id"]
+    assert last == db.q1("SELECT MAX(id) n FROM messages WHERE patient_id=5")["n"]

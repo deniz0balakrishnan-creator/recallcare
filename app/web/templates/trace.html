@@ -4,6 +4,10 @@
 <div class="pagehead"><div><h1>Decision trace</h1>
   <p class="muted">Every step the agents took: who routed where, what the guard decided, which tools ran, which model was called and what it cost.</p></div>
   <span class="spacer"></span>
+  <span class="chip live" id="live" data-follow="{{ 1 if follow else 0 }}" data-newest="{{ newest }}" data-sel="{{ sel or '' }}"
+        data-events="{{ events|length }}" data-done="{{ 1 if (run and run.outcome) else 0 }}" data-pid="{{ pid or '' }}"
+        role="status" aria-live="polite"><span class="dot"></span><span id="live-label">Live</span></span>
+  <button type="button" id="live-btn" class="ghost">Pause</button>
   {% if pid %}<a class="btn" href="/trace">Show all patients</a>{% endif %}
 </div>
 <div class="threads">
@@ -37,4 +41,37 @@
     {% else %}<p class="empty">Pick a run.</p>{% endif %}
   </section>
 </div>
+<script>
+// Live mode: while following, open the newest run as soon as it appears and keep it updating step by step,
+// so activity from another device (a judge on the patient phone) shows up here without reloading.
+(function () {
+  const el = document.getElementById("live"); if (!el) return;
+  const d = el.dataset; let follow = d.follow === "1";
+  const label = document.getElementById("live-label"), btn = document.getElementById("live-btn");
+  const pidQ = d.pid ? "&pid=" + encodeURIComponent(d.pid) : "";
+  const go = (id) => { location.href = "/trace?run=" + encodeURIComponent(id) + "&follow=1" + pidQ; };
+  function render() {
+    el.classList.toggle("on", follow);
+    label.textContent = follow ? "Live: new activity appears automatically" : "Paused on this run";
+    btn.textContent = follow ? "Pause" : "Follow live";
+  }
+  async function poll() {
+    if (!follow) return;
+    try {
+      const r = await fetch("/api/trace/latest" + (d.pid ? "?pid=" + encodeURIComponent(d.pid) : ""), { cache: "no-store" });
+      if (!r.ok) return;
+      const j = await r.json(); if (!j.run_id) return;
+      if (j.run_id !== d.newest || (j.run_id === d.sel && String(j.events) !== d.events)) go(j.run_id);
+    } catch (e) {}
+  }
+  btn.addEventListener("click", () => {
+    follow = !follow; render();
+    if (follow) { if (d.newest && d.newest !== d.sel) go(d.newest); else poll(); }
+    else if (d.sel) history.replaceState(null, "", "/trace?run=" + encodeURIComponent(d.sel) + pidQ);
+  });
+  render();
+  if (follow && d.done === "0") { const items = document.querySelectorAll("ol.tl > li"); if (items.length) items[items.length - 1].scrollIntoView({ block: "nearest" }); }
+  setInterval(poll, 2000);
+})();
+</script>
 {% endblock %}

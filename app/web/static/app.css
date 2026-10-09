@@ -248,3 +248,10 @@ details summary { cursor: pointer; color: var(--ink-2); font-size: .9rem; }
   .tools button, .seg button { font-size: .8rem; }
   .wrap { padding: .9rem; }
 }
+
+/* ---------- live indicator (Trace) ---------- */
+.chip.live .dot { background: var(--muted); }
+.chip.live.on { color: var(--good-ink); }
+.chip.live.on .dot { background: var(--good); animation: livepulse 1.6s ease-in-out infinite; }
+@keyframes livepulse { 50% { opacity: .3; } }
+@media (prefers-reduced-motion: reduce) { .chip.live.on .dot { animation: none; } }

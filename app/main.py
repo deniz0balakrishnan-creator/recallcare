@@ -223,7 +223,7 @@ def _patient_detail(pid: int) -> dict[str, Any]:
 
 
 @app.get("/trace", response_class=HTMLResponse)
-def trace_page(request: Request, run: str | None = None, pid: int | None = None):
+def trace_page(request: Request, run: str | None = None, pid: int | None = None, follow: int = 0):
     if (r := _need_login(request)):
         return r
     where, params = ("WHERE r.patient_id=?", (pid,)) if pid else ("", ())
@@ -234,7 +234,27 @@ def trace_page(request: Request, run: str | None = None, pid: int | None = None)
     run_row = db.q1("SELECT r.*, p.full_name FROM runs r LEFT JOIN patients p ON p.id=r.patient_id WHERE run_id=?", (sel,)) if sel else None
     inbound = db.q1("SELECT * FROM messages WHERE run_id=? AND direction='in'", (sel,)) if sel else None
     return templates.TemplateResponse(request, "trace.html", ctx(
-        request, "trace", runs=runs, sel=sel, events=events, run=run_row, inbound=inbound, pid=pid, source="app"))
+        request, "trace", runs=runs, sel=sel, events=events, run=run_row, inbound=inbound, pid=pid, source="app",
+        follow=(run is None or follow == 1), newest=runs[0]["run_id"] if runs else ""))
+
+
+@app.get("/api/trace/latest")
+def api_trace_latest(request: Request, pid: int | None = None):
+    """Newest run and how many steps it has so far: lets an open Trace page follow new activity live."""
+    _api_auth(request)
+    where, params = ("WHERE patient_id=?", (pid,)) if pid else ("", ())
+    r = db.q1(f"SELECT run_id, outcome FROM runs {where} ORDER BY started_at DESC, rowid DESC LIMIT 1", params)
+    if not r:
+        return {"run_id": None, "events": 0, "done": True}
+    n = db.q1("SELECT COUNT(*) n FROM trace_events WHERE run_id=?", (r["run_id"],))["n"]
+    return {"run_id": r["run_id"], "events": n, "done": r["outcome"] is not None}
+
+
+@app.get("/api/conversations/{pid}/latest")
+def api_conversation_latest(request: Request, pid: int):
+    """Id of the newest message for one patient: lets an open conversation refresh when a new message arrives."""
+    _api_auth(request)
+    return {"last_id": db.q1("SELECT COALESCE(MAX(id), 0) n FROM messages WHERE patient_id=?", (pid,))["n"]}
 
 
 @app.get("/impact", response_class=HTMLResponse)
